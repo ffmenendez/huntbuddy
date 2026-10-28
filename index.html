@@ -1,0 +1,1916 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HuntBuddy XQL</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,650;12..96,750&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --page: #E4DFD5;
+  --panel: #EDE9E1;
+  --raised: #FBF9F5;
+  --sunk: #D9D3C8;
+  --ink: #24211D;
+  --ink-2: #554F47;
+  --ink-3: #625C52;
+  --line: #D1CABE;
+  --line-2: #BDB5A7;
+  --accent: #9A3F34;
+  --accent-ink: #FFF8F2;
+  --accent-soft: #F3E3DE;
+  --ochre: #8A6819;
+  --ochre-bg: #C99A3A;
+  --teal: #2F6E69;
+  --blue: #44628A;
+  --red-soft: #F3E3DE;
+  --ochre-soft: #F3EAD5;
+  --teal-soft: #DDEBE8;
+  --blue-soft: #E2E8F0;
+  --plum: #6E4F6B;
+  --plum-soft: #ECE2EA;
+  --code-bg: #CFC8BA;
+  --code-line: #C3BBAC;
+  --code-fg: #24211D;
+  --code-dim: #574F46;
+  --code-stage: #8E3328;
+  --code-kw: #7A5A10;
+  --code-str: #2E6638;
+  --code-enum: #34557F;
+  --code-num: #7A4A12;
+  --code-hover: rgba(36,33,29,.08);
+  --code-select: rgba(154,63,52,.18);
+  --u-process: #9A3F34; --u-user: #A07818; --u-network: #2F6E69; --u-file: #44628A; --u-registry: #6E4F6B; --u-host: #857D70;
+  --focus: #2F6E69;
+  --select: var(--ink);
+  --ed-shadow: 0 3px 17px -2px rgba(36,33,29,1);
+  --sh-rgb: 36,33,29; --sh-sm-a: .12; --sh-lg-a: .32; --sh-k: 2.65;
+  --sh-sm-y: 5px; --sh-sm-blur: 7px; --sh-lg-y: 6px; --sh-lg-blur: 31px; --sh-lg-spread: -7px;
+  --shadow-sm: 0 1px 1px rgba(var(--sh-rgb), calc(var(--sh-sm-a) * var(--sh-k) / 2)),
+               0 var(--sh-sm-y) var(--sh-sm-blur) -1px rgba(var(--sh-rgb), calc(var(--sh-sm-a) * var(--sh-k)));
+  --shadow: 0 1px 2px rgba(var(--sh-rgb), calc(var(--sh-lg-a) * var(--sh-k) / 4)),
+            0 var(--sh-lg-y) var(--sh-lg-blur) var(--sh-lg-spread) rgba(var(--sh-rgb), calc(var(--sh-lg-a) * var(--sh-k)));
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --r: 8px;
+  --r-sm: 5px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --page: #100F0E; --panel: #181715; --raised: #22201D; --sunk: #2A2824; --ink: #ECE6DC; --ink-2: #BBB3A6; --ink-3: #9A9286;
+    --line: #2F2C28; --line-2: #423E38; --accent: #DB8C7E; --accent-ink: #1B1714; --accent-soft: #3A2622;
+    --ochre: #D9B464; --ochre-bg: #B8913F; --teal: #7DBAB2; --blue: #97AFD0;
+    --red-soft: #3A2622; --ochre-soft: #372E1C; --teal-soft: #1F3331; --blue-soft: #232D3B; --plum: #C29DBE; --plum-soft: #33252F;
+    --code-bg: #0A0909; --code-line: #1B1917; --code-fg: #EDE7DB; --code-dim: #8E877B; --code-stage: #E8A796; --code-kw: #DDB868; --code-str: #A6CFA6; --code-enum: #98BCDA; --code-num: #E4C890; --code-hover: rgba(255,255,255,.06); --code-select: rgba(221,184,104,.3); --u-process: #D9897B; --u-user: #D9B464; --u-network: #7DBAB2; --u-file: #97AFD0; --u-registry: #C29DBE; --u-host: #8E877B; --focus: #7DBAB2;
+    --sh-rgb: 214,160,72; --sh-sm-a: .06; --sh-lg-a: .22; --sh-sm-y: 2px; --sh-sm-blur: 9px; --sh-lg-y: 14px; --sh-lg-blur: 26px; --sh-lg-spread: -7px; --select: var(--accent); --ed-shadow: 0 16px 34px -15px rgba(154,63,52,.39);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --page: #100F0E; --panel: #181715; --raised: #22201D; --sunk: #2A2824; --ink: #ECE6DC; --ink-2: #BBB3A6; --ink-3: #9A9286;
+  --line: #2F2C28; --line-2: #423E38; --accent: #DB8C7E; --accent-ink: #1B1714; --accent-soft: #3A2622;
+  --ochre: #D9B464; --ochre-bg: #B8913F; --teal: #7DBAB2; --blue: #97AFD0;
+  --red-soft: #3A2622; --ochre-soft: #372E1C; --teal-soft: #1F3331; --blue-soft: #232D3B; --plum: #C29DBE; --plum-soft: #33252F;
+  --code-bg: #0A0909; --code-line: #1B1917; --code-fg: #EDE7DB; --code-dim: #8E877B; --code-stage: #E8A796; --code-kw: #DDB868; --code-str: #A6CFA6; --code-enum: #98BCDA; --code-num: #E4C890; --code-hover: rgba(255,255,255,.06); --code-select: rgba(221,184,104,.3); --u-process: #D9897B; --u-user: #D9B464; --u-network: #7DBAB2; --u-file: #97AFD0; --u-registry: #C29DBE; --u-host: #8E877B; --focus: #7DBAB2;
+  --sh-rgb: 214,160,72; --sh-sm-a: .06; --sh-lg-a: .22; --sh-sm-y: 2px; --sh-sm-blur: 9px; --sh-lg-y: 14px; --sh-lg-blur: 26px; --sh-lg-spread: -7px; --select: var(--accent); --ed-shadow: 0 16px 34px -15px rgba(154,63,52,.39);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body {
+  background: var(--page); color: var(--ink);
+  font: 14px/1.55 var(--f-body);
+  display: flex; flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--panel); }
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+code, .mono { font-family: var(--f-mono); font-size: .9em; }
+svg.i { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+header.top {
+  flex: none; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: var(--panel); border-bottom: 1px solid var(--line); box-shadow: var(--shadow-sm);
+}
+.band {
+  height: 4px;
+  background: repeating-linear-gradient(90deg,
+    var(--accent) 0 18px, transparent 18px 20px,
+    var(--ochre-bg) 20px 38px, transparent 38px 40px,
+    var(--ink) 40px 58px, transparent 58px 60px,
+    var(--line-2) 60px 78px, transparent 78px 80px);
+}
+.top-inner {
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  padding-block: 10px;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+.brand { display: flex; align-items: center; gap: 11px; }
+.mark { width: 26px; height: 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 2px; transform: rotate(45deg) scale(.82); border-radius: 3px; overflow: hidden; }
+.mark i:nth-child(1) { background: var(--accent); }
+.mark i:nth-child(2) { background: var(--ochre-bg); }
+.mark i:nth-child(3) { background: var(--ink); }
+.mark i:nth-child(4) { background: var(--line-2); }
+.brand h1 { margin: 0; font: 750 19px/1 var(--f-display); letter-spacing: -.02em; }
+.brand h1 span { color: var(--accent); }
+.brand .sub { color: var(--ink-3); font-size: 12.5px; padding-left: 12px; border-left: 1px solid var(--line); }
+.top-meta { display: flex; gap: 6px; align-items: center; margin-left: auto; }
+.chip {
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.08);
+  display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 11px;
+  border-radius: 999px; font-size: 12.5px; color: var(--ink-2); background: var(--sunk);
+}
+.chip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ochre-bg); }
+.iconbtn {
+  display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 10px;
+  border: 1px solid transparent; border-radius: var(--r-sm); background: transparent; color: var(--ink-2); font-size: 13px; font-weight: 500;
+}
+.iconbtn:hover { background: var(--sunk); color: var(--ink); }
+.iconbtn[aria-pressed="true"] { background: var(--sunk); color: var(--ink); }
+main.desk { flex: 1; min-height: 0; display: grid; grid-template-columns: 336px minmax(0, 1fr) 340px; }
+main.desk.no-assistant { grid-template-columns: 336px minmax(0, 1fr); }
+.explorer { position: relative; z-index: 1; box-shadow: var(--shadow); background: var(--panel); border-right: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; min-width: 0; }
+.work { overflow: auto; min-width: 0; }
+.assistant { position: relative; z-index: 1; box-shadow: var(--shadow); background: var(--panel); border-left: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; min-width: 0; }
+.side-head { padding: 14px 16px 10px; flex: none; }
+.side-head h2, .rail-head h2 { margin: 0; font: 650 16px/1.25 var(--f-display); letter-spacing: -.01em; }
+.side-head p, .rail-head p { margin: 4px 0 0; color: var(--ink-3); font-size: 12.5px; }
+.label { font-size: 11px; letter-spacing: .09em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; }
+.search { position: relative; margin-top: 10px; display: block; }
+.search input {
+  width: 100%; height: 38px; padding: 0 12px 0 36px; border: 1px solid var(--line); border-radius: var(--r);
+  background: var(--raised); font-size: 13.5px; box-shadow: var(--shadow-sm);
+}
+.search input::placeholder { color: var(--ink-3); }
+.search input:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 18%, transparent); }
+.search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--ink-3); }
+.chain { padding: 2px 16px 10px; flex: none; }
+.flow { display: flex; align-items: center; gap: 2px; margin-top: 8px; }
+.flow .arrow { color: var(--line-2); flex: none; }
+.link {
+  flex: 1 1 0; min-width: 0; height: 32px; padding: 0 6px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--raised); font-size: 12px; font-weight: 500; color: var(--ink-2); box-shadow: var(--shadow-sm);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.link:hover { border-color: var(--line-2); color: var(--ink); }
+.link[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--page); }
+.link.alt { flex: none; margin-top: 6px; border-style: dashed; display: inline-flex; align-items: center; gap: 6px; padding: 0 12px; background: transparent; box-shadow: none; }
+.link.alt[aria-pressed="true"] { border-style: solid; background: var(--ink); }
+.chain-note { margin: 8px 0 0; font-size: 12.5px; color: var(--ink-2); line-height: 1.45; }
+.chain-note code { font-size: 11.5px; color: var(--ink); background: var(--sunk); padding: 1px 4px; border-radius: 3px; }
+.kinds { display: flex; flex-wrap: wrap; gap: 2px; padding: 0 10px 8px; flex: none; }
+.kind {
+  border: 0; background: transparent; border-radius: 999px; height: 28px; padding: 0 8px 0 7px;
+  font-size: 12px; display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2);
+}
+.kind:hover { background: var(--sunk); }
+.kind i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+.kind[aria-pressed="true"] { background: var(--soft); color: var(--ink); font-weight: 600; box-shadow: inset 0 0 0 1px var(--c), var(--shadow-sm); }
+.count { padding: 6px 16px; font-size: 11.5px; color: var(--ink-3); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); flex: none; background: var(--page); }
+.fields { overflow: auto; flex: 1; padding-bottom: 16px; }
+.group-label {
+  position: sticky; top: 0; z-index: 1; display: flex; align-items: baseline; gap: 8px;
+  padding: 10px 16px 4px; background: var(--panel);
+}
+.group-label code { font-size: 11px; color: var(--ink-3); }
+.field {
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 8px;
+  padding: 6px 10px 7px 16px; border-left: 2px solid transparent;
+}
+.field:hover { background: var(--raised); border-left-color: var(--c); box-shadow: var(--shadow-sm); }
+.fname {
+  border: 0; background: none; padding: 0; text-align: left; min-width: 0;
+  font: 500 12.5px/1.45 var(--f-mono); color: var(--ink); word-break: break-all;
+}
+.fname:hover { color: var(--accent); }
+.field .desc { grid-column: 1 / -1; margin: 0; color: var(--ink-2); font-size: 12.5px; line-height: 1.45; }
+.field .meta { grid-column: 1 / -1; display: flex; gap: 10px; flex-wrap: wrap; font-size: 11px; color: var(--ink-3); margin-top: 3px; }
+.field .meta .k { display: inline-flex; align-items: center; gap: 5px; }
+.field .meta .k::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--c); }
+.field .meta .warn { color: var(--ochre); }
+.field .meta .ok { color: var(--teal); }
+.add {
+  width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); background: var(--raised);
+  display: grid; place-items: center; color: var(--ink-2); opacity: 0; transition: opacity .12s; box-shadow: var(--shadow-sm);
+}
+.field:hover .add, .field:focus-within .add { opacity: 1; }
+.add:hover { background: var(--ink); color: var(--page); border-color: var(--ink); }
+@media (hover: none) { .add { opacity: 1; } }
+.empty { padding: 28px 18px; color: var(--ink-3); font-size: 13px; }
+.canvas {
+  display: flex; flex-direction: column; gap: 22px;
+  padding-block: 20px 32px;
+  padding-left: max(24px, env(safe-area-inset-left, 0px));
+  padding-right: max(24px, env(safe-area-inset-right, 0px));
+}
+.intro h2 { margin: 0; font: 700 clamp(19px, 2vw, 22px)/1.2 var(--f-display); letter-spacing: -.02em; text-wrap: balance; }
+.intro p { margin: 4px 0 0; color: var(--ink-2); max-width: 80ch; font-size: 13.5px; }
+.step { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 0 14px; }
+.step-n {
+  width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+  font: 600 13px/1 var(--f-display); background: var(--ink); color: var(--page); box-shadow: var(--shadow-sm);
+}
+.step-h { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; min-height: 28px; }
+.step-h h3 { margin: 0; font: 650 16px/28px var(--f-display); letter-spacing: -.01em; }
+.step-body { grid-column: 2; margin-top: 8px; min-width: 0; }
+.hint { font-size: 12.5px; color: var(--ink-3); }
+.questions { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
+.q {
+  text-align: left; border: 1px solid var(--line); background: var(--raised); border-radius: var(--r);
+  padding: 10px 12px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 11px; align-items: start;
+  transition: border-color .12s, box-shadow .12s; box-shadow: var(--shadow-sm);
+}
+.q .qi { grid-row: span 2; width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; background: var(--soft); color: var(--c); }
+.q b { font: 600 14px/1.3 var(--f-body); }
+.q span { font-size: 12.5px; color: var(--ink-3); }
+.q:hover { border-color: var(--line-2); box-shadow: var(--shadow); }
+.q[aria-pressed="true"] { border-color: var(--select); box-shadow: inset 0 0 0 1px var(--select), var(--shadow); }
+.form { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px 14px; }
+.form label { display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; color: var(--ink-2); font-weight: 500; min-width: 0; }
+.form input, .form select {
+  height: 36px; padding: 0 10px; border: 1px solid var(--line); border-radius: var(--r); background: var(--raised);
+  font-family: var(--f-mono); font-size: 13px; width: 100%; box-shadow: var(--shadow-sm);
+}
+.form input:focus, .form select:focus { outline: none; border-color: var(--focus); box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 18%, transparent); }
+.form .help { font-weight: 400; color: var(--ink-3); font-size: 11.5px; }
+.timebox { display: contents; }
+.quick { grid-column: 1 / -1; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: -4px; }
+.quick .help { margin-right: 4px; }
+.qk { height: 28px; padding: 0 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--raised); font-size: 12px; font-weight: 500; box-shadow: var(--shadow-sm); }
+.qk:hover { border-color: var(--ink); }
+.err { grid-column: 1 / -1; margin: -4px 0 0; font-size: 12.5px; color: var(--accent); font-weight: 500; }
+.editor-wrap { border-radius: 10px; background: var(--code-bg); box-shadow: var(--ed-shadow); border: 1px solid var(--line-2); }
+.editor-wrap > .editor-bar { border-radius: 9px 9px 0 0; }
+.editor-wrap > .editor { border-radius: 0 0 9px 9px; overflow: hidden; }
+.editor-bar { display: flex; align-items: center; gap: 10px; padding: 10px 12px 10px 16px; flex-wrap: wrap; background: var(--code-line); }
+.editor-bar .ttl { font: 500 12.5px/1 var(--f-body); color: var(--code-fg); }
+.editor-bar .lines { color: var(--code-dim); font-size: 12px; }
+.editor-bar .sp { flex: 1; }
+.ebtn {
+  display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: var(--r-sm);
+  background: transparent; border: 0; color: var(--code-dim); font-size: 12.5px; font-weight: 500;
+}
+.ebtn:hover { color: var(--code-fg); background: var(--code-hover); }
+.ebtn.go { background: var(--accent); color: var(--accent-ink); padding: 0 14px; box-shadow: var(--shadow-sm); }
+.ebtn.go:hover { filter: brightness(1.08); background: var(--accent); color: var(--accent-ink); }
+.editor { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); }
+.gutter {
+  padding: 14px 10px 14px 16px; text-align: right; color: var(--code-dim); opacity: .6; user-select: none;
+  font: 13px/1.7 var(--f-mono); white-space: pre;
+}
+.code { position: relative; min-width: 0; }
+.code pre, .code textarea {
+  margin: 0; padding: 14px 18px 14px 12px; font: 13px/1.7 var(--f-mono); tab-size: 2;
+  white-space: pre; overflow: auto; min-height: 200px; width: 100%;
+}
+.code pre { color: var(--code-fg); pointer-events: none; }
+.code textarea { position: absolute; inset: 0; resize: none; border: 0; background: transparent; color: transparent; caret-color: var(--code-fg); outline: none; }
+.code textarea::selection { background: var(--code-select); color: transparent; }
+.editor-wrap:focus-within { box-shadow: 0 0 0 2px var(--focus), var(--ed-shadow); }
+.t-stage { color: var(--code-stage); font-weight: 500; }
+.t-kw { color: var(--code-kw); }
+.t-str { color: var(--code-str); }
+.t-enum { color: var(--code-enum); }
+.t-num { color: var(--code-num); }
+.t-cm { color: var(--code-dim); font-style: italic; }
+.t-f { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.t-f.process { text-decoration-color: var(--u-process); }
+.t-f.user { text-decoration-color: var(--u-user); }
+.t-f.network { text-decoration-color: var(--u-network); }
+.t-f.file { text-decoration-color: var(--u-file); }
+.t-f.registry { text-decoration-color: var(--u-registry); }
+.t-f.host { text-decoration-color: var(--u-host); }
+.sample-flag { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ochre); }
+.sample-flag::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ochre-bg); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); background: var(--raised); box-shadow: var(--shadow-sm); }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 9px 14px; white-space: nowrap; }
+th {
+  font: 500 11.5px/1.3 var(--f-mono); color: var(--ink-2); background: var(--panel);
+  border-bottom: 1px solid var(--line); box-shadow: inset 0 3px 0 var(--c, var(--line-2));
+}
+td { font: 12.5px/1.4 var(--f-mono); font-variant-numeric: tabular-nums; border-bottom: 1px solid var(--line); color: var(--ink); }
+td.na { color: var(--ink-3); font-family: var(--f-body); font-style: italic; }
+.cell-link { all: unset; cursor: pointer; color: var(--plum); text-decoration: underline dotted; text-underline-offset: 3px; }
+.cell-link:hover { text-decoration-style: solid; }
+.cell-link:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: var(--panel); }
+.field[draggable="true"] { cursor: grab; }
+.field.dragging { opacity: .45; }
+body.dragging-field .table-wrap { outline: 2px dashed var(--accent); outline-offset: 3px; }
+.drop-hint { display: none; margin-top: 8px; font-size: 12px; color: var(--accent); font-weight: 500; }
+body.dragging-field .drop-hint { display: block; }
+#preview th[draggable="true"] { cursor: grab; }
+#preview th[draggable="true"]:hover { color: var(--ink); background: var(--raised); }
+body.discarding .table-wrap { outline-color: var(--ink-3); }
+body.discarding .drop-hint { color: var(--ink-2); }
+th.ghost, td.ghost {
+  background: color-mix(in srgb, var(--accent-soft) 70%, transparent); color: var(--accent);
+  border-left: 1px dashed var(--accent); border-right: 1px dashed var(--accent);
+}
+th.ghost { box-shadow: inset 0 3px 0 var(--accent); font-weight: 600; }
+th.ghost > span, td.ghost > span { display: inline-block; opacity: .6; animation: col-in .2s ease-out; }
+td.ghost > span { font-style: italic; }
+@keyframes col-in { from { opacity: 0; } }
+#preview th, #preview td { will-change: transform; }
+.drag-chip {
+  position: fixed; left: 0; top: 0; z-index: 40; pointer-events: none;
+  display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px 0 10px; border-radius: 999px;
+  background: var(--raised); color: var(--ink); border: 1px solid var(--line-2); box-shadow: var(--shadow);
+  font: 500 12.5px/1 var(--f-mono); white-space: nowrap;
+  transition: background .12s, color .12s, border-color .12s;
+}
+.drag-chip .dc-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c, var(--ink-3)); }
+.drag-chip .dc-x { display: none; width: 18px; height: 18px; border-radius: 50%; place-items: center; background: var(--accent-ink); color: var(--accent); }
+.drag-chip .dc-x svg { width: 12px; height: 12px; stroke-width: 2.5; }
+.drag-chip.discard { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.drag-chip.discard .dc-dot { display: none; }
+.drag-chip.discard .dc-x { display: grid; }
+.drag-chip .dc-act { font: 600 11px/1 var(--f-body); letter-spacing: .04em; text-transform: uppercase; opacity: .75; }
+.table-empty { padding: 22px 16px; color: var(--ink-3); font-size: 13px; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px; font-size: 11.5px; color: var(--ink-3); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 3px; border-radius: 2px; background: var(--c); }
+.rail-head { padding: 18px 18px 14px; border-bottom: 1px solid var(--line); flex: none; }
+.chat { flex: 1; overflow: auto; padding: 18px; display: flex; flex-direction: column; gap: 16px; }
+.msg { display: flex; flex-direction: column; gap: 5px; max-width: 100%; }
+.msg .who { font-size: 11px; color: var(--ink-3); letter-spacing: .08em; text-transform: uppercase; font-weight: 600; }
+.msg .body { padding: 11px 13px; border-radius: 12px; font-size: 13px; line-height: 1.5; }
+.msg.me { align-items: flex-end; }
+.msg.me .body { background: var(--ink); color: var(--page); border-bottom-right-radius: 4px; max-width: 90%; box-shadow: var(--shadow-sm); }
+.msg.ai .body { background: var(--raised); border: 1px solid var(--line); border-bottom-left-radius: 4px; box-shadow: var(--shadow-sm); }
+.msg .body p { margin: 0 0 8px; }
+.msg .body p:last-child { margin: 0; }
+.msg pre.snip { margin: 8px 0 10px; background: var(--code-bg); color: var(--code-fg); border-radius: 6px; padding: 10px 12px; font: 11.5px/1.6 var(--f-mono); overflow-x: auto; white-space: pre; }
+.msg .body code { background: var(--sunk); padding: 1px 4px; border-radius: 3px; }
+.load { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: var(--r-sm); border: 1px solid var(--line-2); background: transparent; font-size: 12.5px; font-weight: 500; }
+.load:hover { background: var(--ink); color: var(--page); border-color: var(--ink); }
+.composer { padding: 12px 18px calc(14px + env(safe-area-inset-bottom, 0px)); flex: none; }
+.composer form { display: flex; align-items: flex-end; gap: 8px; padding: 6px 6px 6px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--raised); box-shadow: var(--shadow-sm); }
+.composer form:focus-within { border-color: var(--focus); }
+.composer textarea { flex: 1; min-width: 0; resize: none; height: 40px; padding: 9px 0; border: 0; background: transparent; font-size: 13.5px; outline: none; }
+.send { width: 34px; height: 34px; border-radius: 8px; border: 0; background: var(--ink); color: var(--page); display: grid; place-items: center; }
+.composer .note { margin-top: 8px; font-size: 11.5px; color: var(--ink-3); }
+.toast {
+  position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%) translateY(16px);
+  background: var(--ink); color: var(--page); padding: 10px 16px; border-radius: 999px; font-size: 13px; box-shadow: var(--shadow);
+  opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s; z-index: 20;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+@media (max-width: 1240px) {
+  main.desk, main.desk.no-assistant { grid-template-columns: 310px minmax(0, 1fr); }
+  .assistant { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--line); max-height: 560px; }
+}
+@media (max-width: 800px) {
+  html, body { height: auto; }
+  main.desk, main.desk.no-assistant { grid-template-columns: minmax(0, 1fr); }
+  .explorer { border-right: 0; border-bottom: 1px solid var(--line); max-height: 620px; }
+  .work { order: -1; }
+  .brand .sub, .chip { display: none; }
+  .canvas { padding-block: 22px 32px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); gap: 28px; }
+  .top-inner { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .step { grid-template-columns: 24px minmax(0, 1fr); gap: 0 10px; }
+  .step-n { width: 24px; height: 24px; font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) { .toast, .q, .add, .drag-chip { transition: none; } th.ghost > span, td.ghost > span { animation: none; } }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-swap" viewBox="0 0 24 24"><path d="M7 7h12l-3-3M17 17H5l3 3"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.3-5.6M4 4v4h4"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M5 18.5V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H8z"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M5 12h13M12 5l7 7-7 7"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></symbol>
+  <symbol id="i-auto" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v16" /><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></symbol>
+  <symbol id="i-net" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 11l10-4M7 13l10 4"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 14l2 2 4-4"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2-6 4 12 2-6h6"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="band" aria-hidden="true"></div>
+  <div class="top-inner">
+    <div class="brand">
+      <div class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <h1>HuntBuddy <span>XQL</span></h1>
+      <span class="sub">Cortex threat hunting</span>
+    </div>
+    <div class="top-meta">
+      <span class="chip" title="Targets the unified xdr_data model. Older tenants with named datasets need different queries."><span class="mono">xdr_data</span></span>
+      <span class="chip" id="assistantPill"><span class="dot"></span>Assistant offline</span>
+      <button class="iconbtn" id="assistantBtn" type="button" aria-controls="assistantPane" aria-pressed="false"><svg class="i"><use href="#i-chat"/></svg><span>Assistant</span></button>
+      <button class="iconbtn" id="themeBtn" type="button" aria-label="Color theme: system"><svg class="i"><use href="#i-auto"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<main class="desk">
+  
+  <aside class="explorer" aria-labelledby="fx-h">
+    <div class="side-head">
+      <h2 id="fx-h">Fields</h2>
+      <p>Drag a field onto the results to place it as a column. Click a name to type it into the query.</p>
+      <label class="search">
+        <svg class="i"><use href="#i-search"/></svg>
+        <input id="fieldSearch" type="search" placeholder="Search fields or ideas: proxy, hash, injection" aria-label="Search fields">
+      </label>
+    </div>
+
+    <div class="chain">
+      <div class="label">Actor chain</div>
+      <div class="flow" role="group" aria-label="Filter by role in the actor chain">
+        <button class="link" type="button" data-role="causality" aria-pressed="false">Root cause</button>
+        <svg class="i arrow" aria-hidden="true"><use href="#i-arrow"/></svg>
+        <button class="link" type="button" data-role="actor" aria-pressed="false">Initiator</button>
+        <svg class="i arrow" aria-hidden="true"><use href="#i-arrow"/></svg>
+        <button class="link" type="button" data-role="action" aria-pressed="false">Target</button>
+      </div>
+      <button class="link alt" type="button" data-role="dst" aria-pressed="false"><svg class="i"><use href="#i-swap"/></svg>Other endpoint</button>
+      <p class="chain-note" id="chainNote">Most hunts start with the <b>Initiator</b>: the process and account that made the connection or wrote the file.</p>
+    </div>
+
+    <div class="kinds" role="group" aria-label="Filter by kind">
+      <button class="kind" type="button" data-kind="process" aria-pressed="false" style="--c:var(--accent);--soft:var(--red-soft)"><i></i>Process</button>
+      <button class="kind" type="button" data-kind="user" aria-pressed="false" style="--c:var(--ochre-bg);--soft:var(--ochre-soft)"><i></i>User</button>
+      <button class="kind" type="button" data-kind="network" aria-pressed="false" style="--c:var(--teal);--soft:var(--teal-soft)"><i></i>Connection</button>
+      <button class="kind" type="button" data-kind="file" aria-pressed="false" style="--c:var(--blue);--soft:var(--blue-soft)"><i></i>File</button>
+      <button class="kind" type="button" data-kind="registry" aria-pressed="false" style="--c:var(--plum);--soft:var(--plum-soft)"><i></i>Registry</button>
+      <button class="kind" type="button" data-kind="host" aria-pressed="false" style="--c:var(--ink-3);--soft:var(--sunk)"><i></i>Host</button>
+    </div>
+    <div class="count" id="fieldCount" aria-live="polite"></div>
+
+    <div class="fields" id="fieldList"></div>
+  </aside>
+
+  <section class="work" aria-labelledby="wk-h">
+    <div class="canvas">
+      <div class="intro">
+        <h2 id="wk-h">Find the process and the person behind an event</h2>
+        <p>Pick a hunt, fill in what you already know, arrange the columns you want back, then copy the query into Cortex Query Builder. The time range travels with the query.</p>
+      </div>
+
+      <div class="step">
+        <span class="step-n">1</span>
+        <div class="step-h"><h3>Choose a hunt</h3></div>
+        <div class="step-body"><div class="questions" id="questions" role="group" aria-label="Hunts"></div></div>
+      </div>
+
+      <div class="step">
+        <span class="step-n">2</span>
+        <div class="step-h"><h3>Fill in what you know</h3></div>
+        <div class="step-body"><form class="form" id="recipeForm" autocomplete="off"></form></div>
+      </div>
+
+      <div class="step">
+        <span class="step-n">3</span>
+        <div class="step-h"><h3>Organise your output</h3><span class="hint">Drag fields from the list to add columns. Drag a header to move it, or out of the table to remove it. <span class="sample-flag">Example rows, not live data</span></span></div>
+        <div class="step-body">
+          <div class="table-wrap" id="dropZone"><table id="preview"></table></div>
+          <p class="drop-hint" id="dropHint" aria-live="polite"></p>
+          <div class="legend" aria-label="Column colors">
+            <span style="--c:var(--accent)"><i></i>Process</span>
+            <span style="--c:var(--ochre-bg)"><i></i>User</span>
+            <span style="--c:var(--teal)"><i></i>Connection</span>
+            <span style="--c:var(--blue)"><i></i>File</span>
+            <span style="--c:var(--plum)"><i></i>Registry</span>
+            <span style="--c:var(--line-2)"><i></i>Host or computed</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <span class="step-n">4</span>
+        <div class="step-h"><h3>Review and copy the query</h3><span class="hint">Edit freely. Fields are underlined in their kind's color.</span></div>
+        <div class="step-body">
+          <div class="editor-wrap">
+            <div class="editor-bar">
+              <span class="ttl">Query</span>
+              <span class="lines" id="lineInfo">0 lines</span>
+              <span class="sp"></span>
+              <button class="ebtn" type="button" id="resetBtn"><svg class="i"><use href="#i-reset"/></svg>Reset</button>
+              <button class="ebtn go" type="button" id="copyBtn"><svg class="i"><use href="#i-copy"/></svg>Copy query</button>
+            </div>
+            <div class="editor">
+              <div class="gutter" id="gutter" aria-hidden="true">1</div>
+              <div class="code">
+                <pre id="hl" aria-hidden="true"></pre>
+                <textarea id="query" spellcheck="false" aria-label="XQL query editor"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <aside class="assistant" id="assistantPane" aria-labelledby="as-h">
+    <div class="rail-head">
+      <h2 id="as-h">Assistant</h2>
+      <p>Ask in plain words. Answers come back as XQL you can load into the editor.</p>
+    </div>
+    <div class="chat" id="chat">
+      <div class="msg me"><span class="who">You</span><div class="body"><p>Which process on FIN-LT-0442 talked to 185.220.101.4, and under which account?</p></div></div>
+      <div class="msg ai"><span class="who">Assistant</span><div class="body">
+        <p>Filter outgoing network events to that host and remote IP. <code>actor_process_image_name</code> is the process that opened the socket. <code>actor_effective_username</code> is the account it ran as.</p>
+        <pre class="snip">// Illustrative example. ENUM.NETWORK is untested.
+config timeframe = 24h
+| dataset = xdr_data
+| filter event_type = ENUM.NETWORK
+    and agent_hostname = "FIN-LT-0442"
+    and action_remote_ip = "185.220.101.4"
+    and action_network_is_server = false
+| fields _time, actor_process_image_name,
+    actor_effective_username,
+    causality_actor_process_image_name</pre>
+        <p>Add <code>causality_actor_process_image_name</code> to see what launched it, for example <code>outlook.exe</code> → <code>powershell.exe</code>.</p>
+        <button class="load" type="button" id="loadSnip">Load into editor</button>
+      </div></div>
+    </div>
+    <div class="composer">
+      <form id="askForm">
+        <textarea id="ask" placeholder="Ask about a host, user, IP, hash or path" aria-label="Ask the assistant"></textarea>
+        <button class="send" type="submit" aria-label="Ask"><svg class="i"><use href="#i-send"/></svg></button>
+      </form>
+      <div class="note">Not connected yet. Wire your model endpoint into <code>sendToAssistant()</code>.</div>
+    </div>
+  </aside>
+</main>
+
+<div class="toast" id="toast" role="status"></div>
+<div class="drag-chip" id="dragChip" hidden aria-hidden="true"><span class="dc-dot"></span><span class="dc-x"><svg class="i"><use href="#i-x"/></svg></span><span class="dc-name"></span><span class="dc-act"></span></div>
+
+<script>
+const FIELDS = [ {
+  name: "causality_actor_process_image_name",
+  role: "causality",
+  kind: "process",
+  desc: "Process at the root of the chain, e.g. outlook.exe that spawned the initiator.",
+  tags: [ "parent", "chain" ]
+}, {
+  name: "causality_actor_process_command_line",
+  role: "causality",
+  kind: "process",
+  desc: "Command line of the root-cause process."
+}, {
+  name: "causality_actor_process_image_path",
+  role: "causality",
+  kind: "process",
+  desc: "Full path of the root-cause binary."
+}, {
+  name: "causality_actor_process_image_sha256",
+  role: "causality",
+  kind: "process",
+  desc: "SHA-256 of the root-cause binary.",
+  tags: [ "hash" ]
+}, {
+  name: "causality_actor_effective_username",
+  role: "causality",
+  kind: "user",
+  desc: "Account the root-cause process ran as."
+}, {
+  name: "causality_actor_primary_username",
+  role: "causality",
+  kind: "user",
+  desc: "Logged-on account behind the root-cause process."
+}, {
+  name: "actor_process_image_name",
+  role: "actor",
+  kind: "process",
+  desc: "Process that made the connection or wrote the file."
+}, {
+  name: "actor_process_image_path",
+  role: "actor",
+  kind: "process",
+  desc: "Full path of the initiating binary."
+}, {
+  name: "actor_process_command_line",
+  role: "actor",
+  kind: "process",
+  desc: "Command line of the initiating process."
+}, {
+  name: "actor_process_image_sha256",
+  role: "actor",
+  kind: "process",
+  desc: "SHA-256 of the initiating binary.",
+  tags: [ "hash" ]
+}, {
+  name: "actor_process_instance_id",
+  role: "actor",
+  kind: "process",
+  desc: "Cortex process ID. Use it to follow one process across event types; the OS PID is not stable.",
+  tags: [ "pivot", "join" ]
+}, {
+  name: "action_process_instance_id",
+  role: "action",
+  kind: "process",
+  desc: "Cortex ID of the started or stopped process. On a PROCESS_STOP row, look up the PROCESS_START with the same ID for its name and command line.",
+  tags: [ "pivot", "stop", "lookup" ]
+}, {
+  name: "actor_process_os_pid",
+  role: "actor",
+  kind: "process",
+  desc: "OS process ID. Reused by the OS, so pair it with host and time."
+}, {
+  name: "actor_process_execution_time",
+  role: "actor",
+  kind: "process",
+  desc: "When the initiating process started.",
+  tags: [ "timeline" ]
+}, {
+  name: "actor_process_signature_status",
+  role: "actor",
+  kind: "process",
+  desc: "1 Signed, 2 SignedInvalid, 3 Unsigned, 4 FailedToObtain, 5 WeakHash, 6 Unsupported, 7 InvalidCVE2020_0601, 8 Deleted.",
+  tags: [ "unsigned", "signing" ]
+}, {
+  name: "actor_process_signature_vendor",
+  role: "actor",
+  kind: "process",
+  desc: "Vendor part of the initiator's code signature.",
+  tags: [ "signing" ]
+}, {
+  name: "actor_effective_username",
+  role: "actor",
+  kind: "user",
+  desc: "Account the initiating process ran as. On Windows it includes the domain, so match with contains.",
+  tags: [ "who" ]
+}, {
+  name: "actor_primary_username",
+  role: "actor",
+  kind: "user",
+  desc: "Logged-on account. When it differs from the effective user, look for elevation or token use.",
+  tags: [ "elevation", "token", "privilege" ]
+}, {
+  name: "actor_primary_user_sid",
+  role: "actor",
+  kind: "user",
+  desc: "SID of the logged-on account.",
+  tags: [ "elevation" ]
+}, {
+  name: "actor_is_injected_thread",
+  role: "actor",
+  kind: "process",
+  desc: "True when the acting thread was injected into the initiator.",
+  tags: [ "injection" ]
+}, {
+  name: "os_actor_process_image_name",
+  role: "actor",
+  kind: "process",
+  desc: "Process the OS reports as the actor. Differs from actor_* when code was injected.",
+  tags: [ "injection" ]
+}, {
+  name: "os_actor_effective_username",
+  role: "actor",
+  kind: "user",
+  desc: "Account that launched the OS-reported actor process.",
+  tags: [ "injection" ]
+}, {
+  name: "action_remote_ip",
+  role: "action",
+  kind: "network",
+  desc: "Remote IP of the connection.",
+  tags: [ "destination" ]
+}, {
+  name: "action_remote_port",
+  role: "action",
+  kind: "network",
+  desc: "Remote port of the connection."
+}, {
+  name: "action_local_ip",
+  role: "action",
+  kind: "network",
+  desc: "Source IP on this endpoint."
+}, {
+  name: "action_local_port",
+  role: "action",
+  kind: "network",
+  desc: "Source port on this endpoint."
+}, {
+  name: "action_network_is_server",
+  role: "action",
+  kind: "network",
+  desc: "True for incoming connections, false for outgoing. Filter on it so you don't mix directions.",
+  tags: [ "direction", "inbound", "outbound" ]
+}, {
+  name: "action_external_hostname",
+  role: "action",
+  kind: "network",
+  desc: "Hostname this endpoint connects to. Differs from action_remote_ip through a proxy.",
+  tags: [ "domain", "proxy" ]
+}, {
+  name: "dns_query_name",
+  role: "action",
+  kind: "network",
+  desc: "Name in a DNS request. Catches lookups that hostname fields miss.",
+  tags: [ "domain", "dns" ],
+  blank: true
+}, {
+  name: "action_network_success",
+  role: "action",
+  kind: "network",
+  desc: "Whether the session succeeded. Separates attempts from completed connections."
+}, {
+  name: "action_network_protocol",
+  role: "action",
+  kind: "network",
+  desc: "IP protocol number, e.g. 6 TCP, 17 UDP, 1 ICMP."
+}, {
+  name: "action_network_connection_id",
+  role: "action",
+  kind: "network",
+  desc: "ID of the connection. Join key for connect, accept and stats events.",
+  tags: [ "join", "pivot" ]
+}, {
+  name: "action_remote_nat_ip",
+  role: "action",
+  kind: "network",
+  desc: "Destination after NAT. Matters with a gateway or proxy in the path.",
+  tags: [ "proxy", "nat" ],
+  blank: true
+}, {
+  name: "action_file_path",
+  role: "action",
+  kind: "file",
+  desc: "Full path of the file written or created."
+}, {
+  name: "action_file_name",
+  role: "action",
+  kind: "file",
+  desc: "File name only."
+}, {
+  name: "action_file_extension",
+  role: "action",
+  kind: "file",
+  desc: "Extension of action_file_path. Dot or no dot is untested."
+}, {
+  name: "action_file_previous_file_path",
+  role: "action",
+  kind: "file",
+  desc: "Path before a rename.",
+  tags: [ "rename" ],
+  blank: true
+}, {
+  name: "action_file_last_writer_actor",
+  role: "action",
+  kind: "file",
+  desc: "Instance ID of the process that last wrote the file. Answers 'who wrote it' without event sub-types.",
+  tags: [ "who", "writer", "pivot" ]
+}, {
+  name: "action_file_sha256",
+  role: "action",
+  kind: "file",
+  desc: "SHA-256 of the file. Documented as the binary hash, so it may be blank for non-executables.",
+  tags: [ "hash" ],
+  blank: true
+}, {
+  name: "action_file_md5",
+  role: "action",
+  kind: "file",
+  desc: "MD5 of the file. Still a common threat-intel pivot.",
+  tags: [ "hash" ],
+  blank: true
+}, {
+  name: "action_file_size",
+  role: "action",
+  kind: "file",
+  desc: "File size in bytes. Zero-byte and very large drops are both worth a look."
+}, {
+  name: "action_registry_key_name",
+  role: "action",
+  kind: "registry",
+  desc: "Registry key that was created, changed or deleted.",
+  tags: [ "persistence", "run key" ]
+}, {
+  name: "action_registry_value_name",
+  role: "action",
+  kind: "registry",
+  desc: "Registry value name under the key.",
+  tags: [ "persistence" ]
+}, {
+  name: "action_registry_data",
+  role: "action",
+  kind: "registry",
+  desc: "Data written to the registry value.",
+  tags: [ "persistence" ],
+  blank: true
+}, {
+  name: "action_file_signature_status",
+  role: "action",
+  kind: "file",
+  desc: "Whether the written file is signed. Strong signal for dropped binaries.",
+  tags: [ "unsigned", "signing" ]
+}, {
+  name: "action_process_image_name",
+  role: "action",
+  kind: "process",
+  desc: "Child process that was started (process events)."
+}, {
+  name: "action_process_image_command_line",
+  role: "action",
+  kind: "process",
+  desc: "Command line of the started child process."
+}, {
+  name: "action_is_dll_injection",
+  role: "action",
+  kind: "process",
+  desc: "True when the action was a DLL injection.",
+  tags: [ "injection" ]
+}, {
+  name: "dst_agent_hostname",
+  role: "dst",
+  kind: "host",
+  desc: "Hostname of the other endpoint in a cross-host event.",
+  tags: [ "lateral" ]
+}, {
+  name: "dst_actor_process_image_name",
+  role: "dst",
+  kind: "process",
+  desc: "Process on the other endpoint.",
+  tags: [ "lateral" ]
+}, {
+  name: "dst_action_username",
+  role: "dst",
+  kind: "user",
+  desc: "Destination user on the other endpoint, e.g. a remote logon.",
+  tags: [ "lateral", "logon" ]
+}, {
+  name: "dst_action_external_hostname",
+  role: "dst",
+  kind: "network",
+  desc: "Hostname as the destination side sees it. For normal outbound traffic use action_external_hostname.",
+  tags: [ "lateral" ],
+  blank: true
+}, {
+  name: "_time",
+  role: "context",
+  kind: "host",
+  desc: "Event time, epoch milliseconds. Query Builder shows it as a date and always returns it."
+}, {
+  name: "_insert_time",
+  role: "context",
+  kind: "host",
+  desc: "When the event was ingested. A gap from _time means collection lag, not a quiet host.",
+  tags: [ "lag" ]
+}, {
+  name: "agent_hostname",
+  role: "context",
+  kind: "host",
+  desc: "Endpoint where the event was seen."
+}, {
+  name: "agent_id",
+  role: "context",
+  kind: "host",
+  desc: "Cortex agent ID of the endpoint."
+}, {
+  name: "agent_ip_addresses",
+  role: "context",
+  kind: "host",
+  desc: "All IPv4 interface addresses. Find a host by its IP."
+}, {
+  name: "agent_os_type",
+  role: "context",
+  kind: "host",
+  desc: "1 Windows, 2 macOS, 4 Linux. Several fields only exist on one OS."
+}, {
+  name: "event_type",
+  role: "context",
+  kind: "host",
+  desc: "1 Process, 2 Network, 3 File, 4 Registry, 5 Injection, 6 LoadImage, 10 Causality, 15 WindowsEventLog. ENUM.FILE is documented; other ENUM names are untested."
+}, {
+  name: "event_sub_type",
+  role: "context",
+  kind: "host",
+  desc: "Narrows event_type. Docs give file write = 6, create_new = 1; ENUM names are untested."
+} ].map((f => ({
+  schema: true,
+  blank: false,
+  tags: [],
+  ...f
+})));
+
+const ROLES = [ "causality", "actor", "action", "dst", "context" ];
+
+const ROLE_LABEL = {
+  causality: "Root cause",
+  actor: "Initiator",
+  action: "Target",
+  dst: "Other endpoint",
+  context: "Host & event"
+};
+
+const KIND_VARS = {
+  process: [ "var(--accent)", "var(--red-soft)" ],
+  user: [ "var(--ochre-bg)", "var(--ochre-soft)" ],
+  network: [ "var(--teal)", "var(--teal-soft)" ],
+  file: [ "var(--blue)", "var(--blue-soft)" ],
+  registry: [ "var(--plum)", "var(--plum-soft)" ],
+  host: [ "var(--ink-3)", "var(--sunk)" ]
+};
+
+const KIND_LABEL = {
+  process: "Process",
+  user: "User",
+  network: "Connection",
+  file: "File",
+  registry: "Registry",
+  host: "Host & event"
+};
+
+const ROLE_PREFIX = {
+  causality: "causality_actor_*",
+  actor: "actor_* · os_actor_*",
+  action: "action_* · dns_*",
+  dst: "dst_*",
+  context: "agent_* · event_* · _time"
+};
+
+const RECIPE_LOOK = {
+  conn: [ "i-net", "var(--teal)", "var(--teal-soft)" ],
+  file: [ "i-file", "var(--blue)", "var(--blue-soft)" ],
+  user: [ "i-user", "var(--ochre)", "var(--ochre-soft)" ],
+  domain: [ "i-globe", "var(--accent)", "var(--red-soft)" ],
+  proc: [ "i-pulse", "var(--plum)", "var(--plum-soft)" ],
+  start: [ "i-search", "var(--plum)", "var(--plum-soft)" ]
+};
+
+const FIELD_BY_NAME = Object.fromEntries(FIELDS.map((f => [ f.name, f ])));
+
+const time = {
+  range: "7d",
+  from: "2026-10-22T14:00:00",
+  to: "2026-10-22T14:05:00",
+  zone: "utc"
+};
+
+const RANGES = [ [ "24h", "Last 24 hours" ], [ "7d", "Last 7 days" ], [ "30d", "Last 30 days" ], [ "custom", "Custom window" ] ];
+
+const WINDOWS = [ [ 1, "1 min" ], [ 5, "5 min" ], [ 15, "15 min" ], [ 60, "1 hour" ] ];
+
+const withSeconds = v => v && v.length === 16 ? `${v}:00` : v;
+
+function offsetOf(local) {
+  const m = -new Date(local).getTimezoneOffset(), a = Math.abs(m);
+  return `${m < 0 ? "-" : "+"}${String(Math.floor(a / 60)).padStart(2, "0")}${String(a % 60).padStart(2, "0")}`;
+}
+
+const stamp = v => `${withSeconds(v).replace("T", " ")} ${time.zone === "utc" ? "+0000" : offsetOf(v)}`;
+
+function addMinutes(local, n) {
+  const d = new Date(new Date(withSeconds(local)).getTime() + n * 6e4), p = x => String(x).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+}
+
+function windowError() {
+  if (!time.from || !time.to) return "Set both a start and an end time.";
+  if (withSeconds(time.to) <= withSeconds(time.from)) return "The end time must be after the start time.";
+  return "";
+}
+
+function timeframeStage() {
+  if (time.range !== "custom") return `config timeframe = ${time.range}`;
+  const err = windowError();
+  if (err) return `// ${err}\nconfig timeframe = 24h`;
+  return `config timeframe between "${stamp(time.from)}" and "${stamp(time.to)}"`;
+}
+
+const RECIPES = [ {
+  id: "conn",
+  title: "Who made this connection?",
+  sub: "Process and user behind an IP",
+  inputs: [ {
+    id: "ip",
+    label: "Remote IP",
+    value: "185.220.101.4"
+  }, {
+    id: "host",
+    label: "Host (optional)",
+    value: ""
+  } ],
+  build: v => [ `// Which process and account opened outgoing connections to ${v.ip}?`, timeframeStage(), `| dataset = xdr_data`, `| filter event_type = ENUM.NETWORK and action_network_is_server = false`, `| filter action_remote_ip = "${v.ip}"${v.host ? ` and agent_hostname = "${v.host}"` : ""}`, `| fields _time, agent_hostname, actor_effective_username, actor_process_image_name, actor_process_command_line, causality_actor_process_image_name, action_remote_ip, action_remote_port`, `| sort desc _time`, `| limit 200` ].join("\n"),
+  rows: [ {
+    _time: "2026-10-22 14:03:11",
+    agent_hostname: "FIN-LT-0442",
+    actor_effective_username: "CORP\\jdoe",
+    actor_process_image_name: "powershell.exe",
+    actor_process_command_line: "powershell -nop -w hidden -enc JAB...",
+    causality_actor_process_image_name: "outlook.exe",
+    action_remote_ip: "185.220.101.4",
+    action_remote_port: "443",
+    actor_primary_username: "CORP\\jdoe",
+    action_network_is_server: "false"
+  }, {
+    _time: "2026-10-22 14:03:09",
+    agent_hostname: "FIN-LT-0442",
+    actor_effective_username: "CORP\\jdoe",
+    actor_process_image_name: "powershell.exe",
+    actor_process_command_line: "powershell -nop -w hidden -enc JAB...",
+    causality_actor_process_image_name: "outlook.exe",
+    action_remote_ip: "185.220.101.4",
+    action_remote_port: "443",
+    actor_primary_username: "CORP\\jdoe",
+    action_network_is_server: "false"
+  }, {
+    _time: "2026-10-21 09:47:52",
+    agent_hostname: "HR-DT-0118",
+    actor_effective_username: "CORP\\asmith",
+    actor_process_image_name: "rundll32.exe",
+    actor_process_command_line: "rundll32.exe C:\\Users\\Public\\u.dll,Start",
+    causality_actor_process_image_name: "winword.exe",
+    action_remote_ip: "185.220.101.4",
+    action_remote_port: "8443",
+    actor_primary_username: "CORP\\asmith",
+    action_network_is_server: "false"
+  } ]
+}, {
+  id: "file",
+  title: "Who wrote this file?",
+  sub: "Process and user behind a file write",
+  inputs: [ {
+    id: "path",
+    label: "Path contains (optional)",
+    value: "\\AppData\\Local\\Temp\\",
+    help: "Type single backslashes."
+  }, {
+    id: "hash",
+    label: "File hash (optional)",
+    value: "",
+    help: "SHA-256 (64 characters) or MD5 (32). The length picks the field."
+  }, {
+    id: "ext",
+    label: "Extension (optional)",
+    value: "ps1"
+  }, {
+    id: "src",
+    label: "Source",
+    value: "dataset",
+    options: [ [ "dataset", "xdr_data, all file events" ], [ "writes", "xdr_data, writes only" ], [ "preset", "preset = xdr_file (if licensed)" ] ]
+  } ],
+  build: v => {
+    const hash = v.hash.replace(/\s+/g, "");
+    const hashField = hash.length === 32 ? "action_file_md5" : "action_file_sha256";
+    const conds = [ v.path && `action_file_path contains "${v.path}"`, hash && `${hashField} = "${hash}"`, v.ext && `action_file_extension = "${v.ext}"` ].filter(Boolean);
+    const what = [ v.path && `under ${v.path}`, hash && `with hash ${hash}` ].filter(Boolean).join(" and ") || "anywhere";
+    return [ `// Which process and account wrote files ${what}?`, ...hash && hash.length !== 32 && hash.length !== 64 ? [ `// That hash is ${hash.length} characters: SHA-256 is 64 and MD5 is 32.` ] : [], timeframeStage(), ...{
+      dataset: [ `| dataset = xdr_data`, `| filter event_type = ENUM.FILE` ],
+      writes: [ `| dataset = xdr_data`, `// event_sub_type names are untested`, `| filter event_type = ENUM.FILE and event_sub_type in (ENUM.FILE_WRITE, ENUM.FILE_CREATE_NEW)` ],
+      preset: [ `| preset = xdr_file` ]
+    }[v.src], ...conds.length ? [ `| filter ${conds.join(" and ")}` ] : [ `// Add a path, a hash or an extension, or this returns every file event.` ], `| fields _time, agent_hostname, actor_effective_username, actor_process_image_name, causality_actor_process_image_name, action_file_path, ${hashField}`, `| sort desc _time`, `| limit 200` ].join("\n");
+  },
+  rows: [ {
+    _time: "2026-10-22 14:02:58",
+    agent_hostname: "FIN-LT-0442",
+    actor_effective_username: "CORP\\jdoe",
+    actor_process_image_name: "powershell.exe",
+    causality_actor_process_image_name: "outlook.exe",
+    action_file_path: "C:\\Users\\jdoe\\AppData\\Local\\Temp\\upd.ps1",
+    action_file_sha256: "9f2c…b71e",
+    action_file_md5: "5d41…c3f2",
+    action_file_size: "4182",
+    action_file_last_writer_actor: "AdZ1…q8Pw"
+  }, {
+    _time: "2026-10-20 16:20:04",
+    agent_hostname: "IT-SRV-0007",
+    actor_effective_username: "NT AUTHORITY\\SYSTEM",
+    actor_process_image_name: "msiexec.exe",
+    causality_actor_process_image_name: "services.exe",
+    action_file_path: "C:\\Windows\\Temp\\MSI4F2A.ps1",
+    action_file_sha256: "41aa…03d9",
+    action_file_md5: "a87f…09be",
+    action_file_size: "912",
+    action_file_last_writer_actor: "AdYx…m2Kc"
+  } ]
+}, {
+  id: "user",
+  title: "What did this account run?",
+  sub: "Processes started by a user",
+  inputs: [ {
+    id: "user",
+    label: "Username contains",
+    value: "jdoe"
+  } ],
+  build: v => [ `// Processes started by accounts matching "${v.user}"`, timeframeStage(), `| dataset = xdr_data`, `| filter event_type = ENUM.PROCESS and actor_effective_username contains "${v.user}"`, `| fields _time, agent_hostname, actor_effective_username, actor_primary_username, actor_process_image_name, action_process_image_name, action_process_image_command_line`, `| sort desc _time`, `| limit 200` ].join("\n"),
+  rows: [ {
+    _time: "2026-10-22 14:02:55",
+    agent_hostname: "FIN-LT-0442",
+    actor_effective_username: "CORP\\jdoe",
+    actor_primary_username: "CORP\\jdoe",
+    actor_process_image_name: "outlook.exe",
+    action_process_image_name: "powershell.exe",
+    action_process_image_command_line: "powershell -nop -w hidden -enc JAB..."
+  }, {
+    _time: "2026-10-22 08:31:10",
+    agent_hostname: "FIN-LT-0442",
+    actor_effective_username: "CORP\\jdoe",
+    actor_primary_username: "CORP\\jdoe",
+    actor_process_image_name: "explorer.exe",
+    action_process_image_name: "excel.exe",
+    action_process_image_command_line: '"EXCEL.EXE" /dde'
+  } ]
+}, {
+  id: "domain",
+  title: "Who talks to this domain?",
+  sub: "Processes and users, counted",
+  inputs: [ {
+    id: "domain",
+    label: "Domain contains",
+    value: "pastebin.com"
+  } ],
+  build: v => [ `// Which processes and accounts connect to or look up *${v.domain}*?`, timeframeStage(), `| dataset = xdr_data`, `| filter action_external_hostname contains "${v.domain}" or dns_query_name contains "${v.domain}"`, `| comp count() as hits by actor_process_image_name, actor_effective_username, agent_hostname`, `| sort desc hits`, `| limit 100` ].join("\n"),
+  rows: [ {
+    actor_process_image_name: "chrome.exe",
+    actor_effective_username: "CORP\\asmith",
+    agent_hostname: "HR-DT-0118",
+    hits: "37",
+    actor_process_image_sha256: "c0ff…e1a2"
+  }, {
+    actor_process_image_name: "powershell.exe",
+    actor_effective_username: "CORP\\jdoe",
+    agent_hostname: "FIN-LT-0442",
+    hits: "4",
+    actor_process_image_sha256: "de96…a1f0"
+  } ]
+}, {
+  id: "proc",
+  title: "What did this process do?",
+  sub: "Files, registry, connections, executions",
+  inputs: [ {
+    id: "by",
+    label: "Match by",
+    value: "name",
+    options: [ [ "name", "Process name" ], [ "sha", "SHA-256" ], [ "cmd", "Command line contains" ], [ "inst", "Instance ID (one process)" ] ]
+  }, {
+    id: "val",
+    label: "Value",
+    value: "powershell.exe"
+  }, {
+    id: "scope",
+    label: "Scope",
+    value: "self",
+    options: [ [ "self", "This process only" ], [ "chain", "This process and what it started" ] ]
+  }, {
+    id: "act",
+    label: "Activity",
+    value: "all",
+    options: [ [ "all", "All activity" ], [ "file", "Files" ], [ "reg", "Registry" ], [ "net", "Connections" ], [ "exec", "Executions" ] ]
+  }, {
+    id: "host",
+    label: "Host (optional)",
+    value: ""
+  } ],
+  build: v => {
+    const chain = v.scope === "chain" && v.by !== "inst";
+    const pre = chain ? "causality_actor_process_" : "actor_process_";
+    const match = {
+      name: `${pre}image_name = "${v.val}"`,
+      sha: `${pre}image_sha256 = "${v.val}"`,
+      cmd: `${pre}command_line contains "${v.val}"`,
+      inst: `actor_process_instance_id = "${v.val}"`
+    }[v.by];
+    const types = {
+      all: [ "FILE", "REGISTRY", "NETWORK", "PROCESS" ],
+      file: [ "FILE" ],
+      reg: [ "REGISTRY" ],
+      net: [ "NETWORK" ],
+      exec: [ "PROCESS" ]
+    }[v.act];
+    const typeFilter = types.length === 1 ? `event_type = ENUM.${types[0]}` : `event_type in (${types.map((t => `ENUM.${t}`)).join(", ")})`;
+    const who = {
+      name: v.val,
+      sha: `the binary with SHA-256 ${v.val}`,
+      cmd: `processes whose command line contains "${v.val}"`,
+      inst: `process instance ${v.val}`
+    }[v.by];
+    return [ `// Timeline of what ${who} did${chain ? ", and everything it started" : ""}`, ...v.scope === "chain" && v.by === "inst" ? [ `// An instance ID names one process, so Scope is limited to that process.` ] : [], timeframeStage(), `| dataset = xdr_data`, `| filter ${match}${v.host ? ` and agent_hostname = "${v.host}"` : ""}`, `// hunt_target is picked by event_type (the role-flip rule). Some Process events have no command line`, `| filter ${typeFilter}`, `| alter hunt_target = if(event_type = ENUM.FILE, action_file_path,`, `                      if(event_type = ENUM.REGISTRY, action_registry_key_name,`, `                      if(event_type = ENUM.NETWORK, action_remote_ip, action_process_image_command_line)))`, `// PROCESS_STOP rows have no name or command line; look up the PROCESS_START with the same action_process_instance_id`, `| fields _time, event_type, event_sub_type, hunt_target, actor_process_image_name, actor_effective_username, agent_hostname, action_remote_port, action_file_sha256, action_process_instance_id`, `| sort asc _time`, `| limit 1000` ].join("\n");
+  },
+  rows: [ {
+    _time: "2026-10-22 14:02:57",
+    agent_hostname: "FIN-LT-0442",
+    actor_effective_username: "CORP\\jdoe",
+    actor_process_image_name: "powershell.exe",
+    event_type: "FILE",
+    event_sub_type: "FILE_WRITE",
+    hunt_target: "C:\\Users\\jdoe\\AppData\\Local\\Temp\\upd.ps1",
+    action_file_sha256: "9f2c…b71e",
+    actor_process_command_line: "powershell -nop -w hidden -enc JAB...",
+    causality_actor_process_image_name: "outlook.exe"
+  }, {
+    _time: "2026-10-22 14:02:58",
+    agent_hostname: "FIN-LT-0442",
+    actor_effective_username: "CORP\\jdoe",
+    actor_process_image_name: "powershell.exe",
+    event_type: "REGISTRY",
+    event_sub_type: "REGISTRY_SET_VALUE",
+    hunt_target: "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+    action_registry_value_name: "Updater",
+    actor_process_command_line: "powershell -nop -w hidden -enc JAB...",
+    causality_actor_process_image_name: "outlook.exe"
+  }, {
+    _time: "2026-10-22 14:03:09",
+    agent_hostname: "FIN-LT-0442",
+    actor_effective_username: "CORP\\jdoe",
+    actor_process_image_name: "powershell.exe",
+    event_type: "NETWORK",
+    event_sub_type: "NETWORK_STREAM_CONNECT",
+    hunt_target: "185.220.101.4",
+    action_remote_port: "443",
+    actor_process_command_line: "powershell -nop -w hidden -enc JAB...",
+    causality_actor_process_image_name: "outlook.exe"
+  }, {
+    _time: "2026-10-22 14:03:15",
+    agent_hostname: "FIN-LT-0442",
+    actor_effective_username: "CORP\\jdoe",
+    actor_process_image_name: "powershell.exe",
+    event_type: "PROCESS",
+    event_sub_type: "PROCESS_START",
+    hunt_target: "cmd.exe /c whoami /all",
+    action_process_instance_id: "AdcV1L0Dq2kAAA0xAAAAAA==",
+    actor_process_command_line: "powershell -nop -w hidden -enc JAB...",
+    causality_actor_process_image_name: "outlook.exe"
+  }, {
+    _time: "2026-10-22 14:03:16",
+    agent_hostname: "FIN-LT-0442",
+    actor_effective_username: "CORP\\jdoe",
+    actor_process_image_name: "powershell.exe",
+    event_type: "PROCESS",
+    event_sub_type: "PROCESS_STOP",
+    hunt_target: "",
+    action_process_instance_id: "AdcV1L0Dq2kAAA0xAAAAAA==",
+    causality_actor_process_image_name: "outlook.exe"
+  } ]
+}, {
+  id: "start",
+  title: "Where did this process start?",
+  sub: "Name and command line for a stop or PID-only row",
+  inputs: [ {
+    id: "inst",
+    label: "Instance ID",
+    value: "AdcV1L0Dq2kAAA0xAAAAAA==",
+    help: "action_process_instance_id from the blank row. Click one in the results to fill it in."
+  } ],
+  build: v => [ `// Start event of process instance ${v.inst}. Stop and PID-only rows carry no name or command line`, ...time.range === "24h" ? [ `// The process may have started before this window. Use 7 days or more.` ] : [], timeframeStage(), `| dataset = xdr_data`, `| filter event_type = ENUM.PROCESS and action_process_instance_id = "${v.inst}"`, `| fields _time, event_type, event_sub_type, agent_hostname, action_process_image_name, action_process_image_command_line, actor_process_image_name, actor_effective_username, action_process_instance_id`, `| sort asc _time` ].join("\n"),
+  rows: [ {
+    _time: "2026-10-22 14:03:15",
+    event_type: "PROCESS",
+    event_sub_type: "PROCESS_START",
+    agent_hostname: "FIN-LT-0442",
+    action_process_image_name: "cmd.exe",
+    action_process_image_command_line: "cmd.exe /c whoami /all",
+    actor_process_image_name: "powershell.exe",
+    actor_effective_username: "CORP\\jdoe",
+    action_process_instance_id: "AdcV1L0Dq2kAAA0xAAAAAA=="
+  }, {
+    _time: "2026-10-22 14:03:16",
+    event_type: "PROCESS",
+    event_sub_type: "PROCESS_STOP",
+    agent_hostname: "FIN-LT-0442",
+    action_process_image_name: "",
+    action_process_image_command_line: "",
+    actor_process_image_name: "powershell.exe",
+    actor_effective_username: "CORP\\jdoe",
+    action_process_instance_id: "AdcV1L0Dq2kAAA0xAAAAAA=="
+  } ]
+} ];
+
+const state = {
+  role: null,
+  kind: null,
+  q: "",
+  recipe: RECIPES[0],
+  values: {}
+};
+
+const $ = s => document.querySelector(s);
+
+const esc = s => String(s).replace(/[&<>"]/g, (c => ({
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;"
+}[c])));
+
+function matches(f, q) {
+  return f.name.includes(q) || f.desc.toLowerCase().includes(q) || f.tags.some((t => t.includes(q)));
+}
+
+function renderFields() {
+  const q = state.q.trim().toLowerCase();
+  const list = FIELDS.filter((f => (!state.role || f.role === state.role) && (!state.kind || f.kind === state.kind || state.kind !== "host" && f.role === "context") && (!q || matches(f, q))));
+  $("#fieldCount").textContent = `${list.length} of ${FIELDS.length} fields · names verified`;
+  $("#fieldCount").title = "Names checked against the XQL Schema Reference.";
+  const el = $("#fieldList");
+  if (!list.length) {
+    el.innerHTML = `<div class="empty">No fields match. Clear a filter or try a shorter search.</div>`;
+    return;
+  }
+  el.innerHTML = ROLES.map((g => {
+    const items = list.filter((f => f.role === g));
+    if (!items.length) return "";
+    return `<div class="group-label"><span class="label">${ROLE_LABEL[g]}</span><code>${ROLE_PREFIX[g]}</code></div>` + items.map((f => {
+      const [c, soft] = KIND_VARS[f.kind];
+      const meta = [ `<span class="k">${KIND_LABEL[f.kind]}</span>` ];
+      if (!f.schema) meta.push(`<span class="warn">name unconfirmed</span>`);
+      if (f.blank) meta.push(`<span class="warn">sometimes blank</span>`);
+      return `<div class="field" draggable="true" data-field="${f.name}" style="--c:${c};--soft:${soft}">\n        <button class="fname" type="button" data-insert="${f.name}" title="Type into the query at the cursor">${f.name}</button>\n        <button class="add" type="button" data-addcol="${f.name}" aria-label="Add ${f.name} as a result column" title="Add as a result column"><svg class="i"><use href="#i-plus"/></svg></button>\n        <p class="desc">${esc(f.desc)}</p>\n        <div class="meta">${meta.join("")}</div>\n      </div>`;
+    })).join("");
+  })).join("");
+}
+
+const NOTES = {
+  causality: "<b>Root cause</b> is where the process chain started, such as the Office app that launched a script. Prefix <code>causality_actor_</code>.",
+  actor: "<b>Initiator</b> is the process and account that made the connection or wrote the file. Prefix <code>actor_</code>, or <code>os_actor_</code> when code was injected.",
+  action: "<b>Target</b> is what was touched: the remote IP or hostname, the file, or the child process. Prefix <code>action_</code> and <code>dns_</code>.",
+  dst: "<b>Other endpoint</b> is the far host in a cross-host event, such as lateral movement or a remote logon. For ordinary outbound traffic, use Target. Prefix <code>dst_</code>."
+};
+
+const DEFAULT_NOTE = $("#chainNote").innerHTML;
+
+document.querySelectorAll(".link").forEach((b => b.addEventListener("click", (() => {
+  state.role = state.role === b.dataset.role ? null : b.dataset.role;
+  document.querySelectorAll(".link").forEach((x => x.setAttribute("aria-pressed", x.dataset.role === state.role)));
+  $("#chainNote").innerHTML = state.role ? NOTES[state.role] : DEFAULT_NOTE;
+  renderFields();
+}))));
+
+document.querySelectorAll(".kind").forEach((b => b.addEventListener("click", (() => {
+  state.kind = state.kind === b.dataset.kind ? null : b.dataset.kind;
+  document.querySelectorAll(".kind").forEach((x => x.setAttribute("aria-pressed", x.dataset.kind === state.kind)));
+  renderFields();
+}))));
+
+$("#fieldSearch").addEventListener("input", (e => {
+  state.q = e.target.value;
+  renderFields();
+}));
+
+$("#fieldList").addEventListener("click", (e => {
+  const ins = e.target.closest("[data-insert]"), add = e.target.closest("[data-addcol]");
+  if (ins) insertAtCursor(ins.dataset.insert);
+  if (add) addColumn(add.dataset.addcol);
+}));
+
+function renderQuestions() {
+  $("#questions").innerHTML = RECIPES.map((r => {
+    const [icon, c, soft] = RECIPE_LOOK[r.id];
+    return `<button class="q" type="button" data-r="${r.id}" aria-pressed="${r === state.recipe}" style="--c:${c};--soft:${soft}">\n      <span class="qi"><svg class="i"><use href="#${icon}"/></svg></span><b>${r.title}</b><span>${r.sub}</span></button>`;
+  })).join("");
+}
+
+function renderForm() {
+  const r = state.recipe;
+  state.values = Object.fromEntries(r.inputs.map((i => [ i.id, i.value ])));
+  $("#recipeForm").innerHTML = r.inputs.map((i => {
+    const id = `in-${r.id}-${i.id}`;
+    const control = i.options ? `<select id="${id}" data-k="${i.id}">${i.options.map((([v, l]) => `<option value="${v}"${v === i.value ? " selected" : ""}>${esc(l)}</option>`)).join("")}</select>` : `<input id="${id}" data-k="${i.id}" value="${esc(i.value)}">`;
+    return `<label>${i.label}${control}${i.help ? `<span class="help">${i.help}</span>` : ""}</label>`;
+  })).join("") + `<div class="timebox" id="timeBox"></div>`;
+  renderTime();
+}
+
+function renderTime() {
+  const opt = (v, l, cur) => `<option value="${v}"${v === cur ? " selected" : ""}>${esc(l)}</option>`;
+  const range = `<label>Time range<select id="t-range" data-t="range">${RANGES.map((([v, l]) => opt(v, l, time.range))).join("")}</select></label>`;
+  if (time.range !== "custom") {
+    $("#timeBox").innerHTML = range;
+    return;
+  }
+  const here = offsetOf(withSeconds(time.from) || (new Date).toISOString().slice(0, 19));
+  $("#timeBox").innerHTML = range + `\n    <label>From<input type="datetime-local" step="1" id="t-from" data-t="from" value="${time.from}"></label>\n    <label>To<input type="datetime-local" step="1" id="t-to" data-t="to" value="${time.to}"></label>\n    <label>Time zone<select id="t-zone" data-t="zone">${opt("utc", "UTC", time.zone)}${opt("local", `This computer (${here})`, time.zone)}</select></label>\n    <div class="quick"><span class="help">Window from the start time</span>${WINDOWS.map((([n, l]) => `<button type="button" class="qk" data-win="${n}">${l}</button>`)).join("")}</div>\n    <p class="err" id="t-err"></p>`;
+  showWindowError();
+}
+
+function showWindowError() {
+  const el = document.getElementById("t-err");
+  if (el) {
+    el.textContent = windowError();
+    el.hidden = !el.textContent;
+  }
+}
+
+function applyRecipe() {
+  setQuery(state.recipe.build(state.values));
+}
+
+$("#questions").addEventListener("click", (e => {
+  const b = e.target.closest("[data-r]");
+  if (!b) return;
+  state.recipe = RECIPES.find((r => r.id === b.dataset.r));
+  renderQuestions();
+  renderForm();
+  applyRecipe();
+}));
+
+$("#preview").addEventListener("click", (e => {
+  const b = e.target.closest("[data-lookup]");
+  if (!b) return;
+  state.recipe = RECIPES.find((r => r.id === "start"));
+  renderQuestions();
+  renderForm();
+  state.values.inst = b.dataset.lookup;
+  $("#in-start-inst").value = b.dataset.lookup;
+  applyRecipe();
+  showToast("Start-event lookup ready");
+}));
+
+$("#recipeForm").addEventListener("input", (e => {
+  const t = e.target.dataset.t;
+  if (t) {
+    time[t] = e.target.value;
+    if (t === "range") renderTime(); else showWindowError();
+  } else state.values[e.target.dataset.k] = e.target.value.trim();
+  applyRecipe();
+}));
+
+$("#recipeForm").addEventListener("click", (e => {
+  const b = e.target.closest("[data-win]");
+  if (!b || !time.from) return;
+  time.to = addMinutes(time.from, +b.dataset.win);
+  $("#t-to").value = time.to;
+  showWindowError();
+  applyRecipe();
+  showToast(`Window set to ${b.textContent}`);
+}));
+
+$("#recipeForm").addEventListener("submit", (e => e.preventDefault()));
+
+$("#resetBtn").addEventListener("click", applyRecipe);
+
+const STAGES = new Set("dataset preset filter fields alter comp sort limit dedup join union config bin call arrayexpand window target iploc view getrole replacenull transaction top".split(" "));
+
+const KWS = new Set("and or not in contains incidr as by asc desc count count_distinct sum avg min max values to_string to_integer lowercase uppercase coalesce if case_sensitive timeframe between true false null".split(" "));
+
+const TOKEN = /(\/\/[^\n]*)|("""[\s\S]*?"""|"[^"\n]*")|(ENUM\.[A-Z_]+)|(\b\d[\w.]*)|([A-Za-z_][A-Za-z0-9_]*)|([\s\S])/g;
+
+function highlight(src) {
+  let out = "", m;
+  TOKEN.lastIndex = 0;
+  while (m = TOKEN.exec(src)) {
+    const [t, cm, str, en, num, word] = m;
+    if (cm) out += `<span class="t-cm">${esc(cm)}</span>`; else if (str) out += `<span class="t-str">${esc(str)}</span>`; else if (en) out += `<span class="t-enum">${en}</span>`; else if (num) out += `<span class="t-num">${esc(num)}</span>`; else if (word) {
+      const f = FIELD_BY_NAME[word];
+      if (STAGES.has(word)) out += `<span class="t-stage">${word}</span>`; else if (KWS.has(word)) out += `<span class="t-kw">${word}</span>`; else if (f) out += `<span class="t-f ${f.kind}" title="${ROLE_LABEL[f.role]} · ${KIND_LABEL[f.kind]}">${word}</span>`; else out += word;
+    } else out += esc(t);
+  }
+  return out + "\n";
+}
+
+const ta = $("#query"), hl = $("#hl");
+
+function refresh() {
+  const v = ta.value;
+  hl.innerHTML = highlight(v);
+  const n = v.split("\n").length;
+  $("#gutter").textContent = Array.from({
+    length: n
+  }, ((_, i) => i + 1)).join("\n");
+  $("#lineInfo").textContent = `${n} line${n === 1 ? "" : "s"}`;
+  renderColumns();
+}
+
+function setQuery(v) {
+  ta.value = v;
+  refresh();
+}
+
+ta.addEventListener("input", refresh);
+
+ta.addEventListener("scroll", (() => {
+  hl.scrollTop = ta.scrollTop;
+  hl.scrollLeft = ta.scrollLeft;
+}));
+
+ta.addEventListener("keydown", (e => {
+  if (e.key === "Tab" && !e.shiftKey) {
+    e.preventDefault();
+    insertAtCursor("  ", false);
+  }
+}));
+
+function insertAtCursor(text, toast = true) {
+  const s = ta.selectionStart, e = ta.selectionEnd;
+  ta.value = ta.value.slice(0, s) + text + ta.value.slice(e);
+  ta.selectionStart = ta.selectionEnd = s + text.length;
+  ta.focus();
+  refresh();
+  if (toast) showToast(`Inserted ${text}`);
+}
+
+function lastProjection(text) {
+  let last = null;
+  for (const m of text.matchAll(/\|\s*(fields|comp)\b([^|]*)/g)) last = {
+    stage: m[1],
+    body: m[2],
+    index: m.index,
+    end: m.index + m[0].length
+  };
+  return last;
+}
+
+function addColumn(name) {
+  const text = ta.value, p = lastProjection(text);
+  if (p && currentColumns().includes(name)) {
+    showToast(`${name} is already a column`);
+    return;
+  }
+  let next;
+  if (p && p.stage === "comp") {
+    const body = p.body.replace(/\s+$/, "");
+    const tail = p.body.slice(body.length);
+    const added = /\bby\b/.test(body) ? `${body}, ${name}` : `${body} by ${name}`;
+    next = text.slice(0, p.end - p.body.length) + added + tail + text.slice(p.end);
+  } else if (p) {
+    const body = p.body.replace(/\s+$/, "");
+    const tail = p.body.slice(body.length);
+    next = text.slice(0, p.end - p.body.length) + `${body}, ${name}` + tail + text.slice(p.end);
+  } else {
+    const lines = text.split("\n");
+    const at = lines.findIndex((l => /^\s*\|\s*(sort|limit)\b/.test(l)));
+    lines.splice(at < 0 ? lines.length : at, 0, `| fields ${name}`);
+    next = lines.join("\n");
+  }
+  setQuery(next);
+  showToast(`Added ${name} as a column`);
+}
+
+function currentColumns() {
+  const p = lastProjection(ta.value);
+  if (!p) return [];
+  const body = p.body.replace(/\/\/[^\n]*/g, "");
+  if (p.stage === "fields") return body.split(",").map((s => s.trim().split(/\s+/)[0])).filter(Boolean);
+  const by = body.match(/\bby\s+([\s\S]+)/);
+  const aliases = [ ...body.matchAll(/\bas\s+(\w+)/g) ].map((m => m[1]));
+  return [ ...by ? by[1].split(",").map((s => s.trim())).filter(Boolean) : [], ...aliases ];
+}
+
+function renderColumns() {
+  let cols = currentColumns(), ghostAt = -1;
+  const aliases = aliasesOf(lastProjection(ta.value));
+  if (drag && (drag.index !== null || drag.header)) cols = cols.filter((c => c !== drag.name));
+  if (drag && drag.index !== null) {
+    ghostAt = Math.min(drag.index, cols.filter((c => !aliases.includes(c))).length);
+    cols.splice(ghostAt, 0, drag.name);
+  }
+  updateDropHint();
+  const before = new Map([ ...document.querySelectorAll("#preview th[data-col]") ].map((th => [ th.dataset.col, th.getBoundingClientRect().left ])));
+  if (!cols.length) {
+    $("#preview").innerHTML = `<tbody><tr><td class="table-empty">Drag a field here, or add a <code>| fields</code> stage, to choose the columns that come back.</td></tr></tbody>`;
+    return;
+  }
+  const rows = state.recipe.rows;
+  const head = cols.map(((c, i) => {
+    const f = FIELD_BY_NAME[c];
+    const col = f && f.kind !== "host" ? KIND_VARS[f.kind][0] : "var(--line-2)";
+    if (i === ghostAt) return `<th class="ghost" data-col="${esc(c)}"><span>${esc(c)}</span></th>`;
+    const movable = !aliases.includes(c);
+    const tip = f ? `${ROLE_LABEL[f.role]} · ${KIND_LABEL[f.kind]}` : "Computed";
+    return `<th data-col="${esc(c)}"${movable ? ` draggable="true"` : ""} style="--c:${col}" title="${tip}${movable ? ". Drag to move, or drag out of the results to remove." : ""}">${esc(c)}</th>`;
+  }));
+  const cell = (r, c, i) => {
+    const at = ` data-col="${esc(c)}"`;
+    if (i === ghostAt) return `<td class="ghost"${at}><span>${c in r ? esc(r[c]) : "new column"}</span></td>`;
+    if (c === "action_process_instance_id" && r[c] && state.recipe.id !== "start") return `<td${at}><button class="cell-link" type="button" data-lookup="${esc(r[c])}" title="Find where this process started">${esc(r[c])}</button></td>`;
+    return c in r ? `<td${at}>${esc(r[c])}</td>` : `<td class="na"${at}>no example</td>`;
+  };
+  $("#preview").innerHTML = `<thead><tr>${head.join("")}</tr></thead>` + `<tbody>${rows.map((r => `<tr>${cols.map(((c, i) => cell(r, c, i))).join("")}</tr>`)).join("")}</tbody>`;
+  slideColumns(before);
+}
+
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+
+function slideColumns(before) {
+  if (!before.size || reduceMotion.matches) return;
+  const shift = new Map;
+  for (const th of document.querySelectorAll("#preview th[data-col]")) {
+    const old = before.get(th.dataset.col);
+    if (old !== undefined) {
+      const dx = old - th.getBoundingClientRect().left;
+      if (Math.abs(dx) > .5) shift.set(th.dataset.col, dx);
+    }
+  }
+  if (!shift.size) return;
+  const cells = [ ...document.querySelectorAll("#preview [data-col]") ].filter((c => shift.has(c.dataset.col)));
+  for (const c of cells) {
+    c.style.transition = "none";
+    c.style.transform = `translateX(${shift.get(c.dataset.col)}px)`;
+  }
+  void document.getElementById("preview").offsetWidth;
+  for (const c of cells) {
+    c.style.transition = "transform .22s cubic-bezier(.2,.7,.3,1)";
+    c.style.transform = "";
+  }
+}
+
+let drag = null;
+
+const aliasesOf = p => p && p.stage === "comp" ? [ ...p.body.matchAll(/\bas\s+(\w+)/g) ].map((m => m[1])) : [];
+
+function updateDropHint() {
+  const el = document.getElementById("dropHint");
+  const discarding = !!(drag && drag.header && drag.index === null);
+  document.body.classList.toggle("discarding", discarding);
+  if (!el || !drag) return;
+  el.textContent = discarding ? `Release outside the results to remove ${drag.name}. Press Esc to keep it.` : drag.header ? "Drop to move the column here. Drag it out of the results to remove it." : "Drop to place the column here. Columns already in the query move.";
+}
+
+function writeColumns(cols) {
+  const text = ta.value, p = lastProjection(text);
+  const kept = p.body.replace(/\s+$/, ""), tail = p.body.slice(kept.length);
+  if (p.stage === "fields" && !cols.length) {
+    setQuery(text.slice(0, p.index) + text.slice(p.end));
+    return;
+  }
+  let body;
+  if (p.stage === "comp") {
+    const head = (kept.match(/^([\s\S]*?)\s*\bby\b/) || [ null, kept ])[1];
+    body = cols.length ? `${head} by ${cols.join(", ")}` : head;
+  } else body = " " + cols.join(", ");
+  setQuery(text.slice(0, p.end - p.body.length) + body + tail + text.slice(p.end));
+}
+
+function placeColumn(name, index) {
+  const p = lastProjection(ta.value);
+  if (!p) {
+    addColumn(name);
+    return;
+  }
+  const aliases = aliasesOf(p);
+  if (aliases.includes(name)) return;
+  const cols = currentColumns().filter((c => c !== name && !aliases.includes(c)));
+  const at = Math.min(index, cols.length);
+  cols.splice(at, 0, name);
+  writeColumns(cols);
+  showToast(`Placed ${name} as column ${at + 1}`);
+}
+
+function removeColumn(name) {
+  const p = lastProjection(ta.value);
+  if (!p) return;
+  const aliases = aliasesOf(p);
+  writeColumns(currentColumns().filter((c => c !== name && !aliases.includes(c))));
+  showToast(`Removed ${name}. Use Reset to restore the hunt's columns.`);
+}
+
+function dropIndex(x) {
+  return [ ...document.querySelectorAll("#preview th[data-col]") ].filter((th => th.dataset.col !== drag?.name)).filter((th => {
+    const r = th.getBoundingClientRect();
+    return r.left + r.width / 2 < x;
+  })).length;
+}
+
+const blankDragImage = new Image;
+
+blankDragImage.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+
+function startChip(e, name) {
+  e.dataTransfer.setDragImage(blankDragImage, 0, 0);
+  const chip = $("#dragChip"), f = FIELD_BY_NAME[name];
+  chip.style.setProperty("--c", f ? KIND_VARS[f.kind][0] : "var(--ink-3)");
+  chip.querySelector(".dc-name").textContent = name;
+  moveChip(e.clientX, e.clientY);
+  updateChip();
+  chip.hidden = false;
+}
+
+function moveChip(x, y) {
+  $("#dragChip").style.transform = `translate(${x + 14}px, ${y + 12}px)`;
+}
+
+function updateChip() {
+  if (!drag) return;
+  const discard = drag.header && drag.index === null, chip = $("#dragChip");
+  chip.classList.toggle("discard", discard);
+  chip.querySelector(".dc-act").textContent = discard ? "Remove" : drag.index === null ? "" : drag.header ? "Move" : "Add";
+}
+
+function endDrag() {
+  $("#dragChip").hidden = true;
+  drag = null;
+  document.body.classList.remove("dragging-field", "discarding");
+  document.querySelectorAll(".field.dragging").forEach((f => f.classList.remove("dragging")));
+}
+
+$("#fieldList").addEventListener("dragstart", (e => {
+  const f = e.target.closest(".field[data-field]");
+  if (!f) return;
+  drag = {
+    name: f.dataset.field,
+    index: null,
+    header: false
+  };
+  e.dataTransfer.effectAllowed = "copyMove";
+  e.dataTransfer.setData("text/plain", f.dataset.field);
+  startChip(e, f.dataset.field);
+  f.classList.add("dragging");
+  document.body.classList.add("dragging-field");
+  updateDropHint();
+}));
+
+$("#preview").addEventListener("dragstart", (e => {
+  const th = e.target.closest("th[data-col][draggable]");
+  if (!th) return;
+  const name = th.dataset.col;
+  drag = {
+    name: name,
+    index: currentColumns().indexOf(name),
+    header: true
+  };
+  e.dataTransfer.effectAllowed = "move";
+  e.dataTransfer.setData("text/plain", name);
+  startChip(e, name);
+  th.addEventListener("dragend", (() => {
+    if (drag) {
+      endDrag();
+      renderColumns();
+    }
+  }), {
+    once: true
+  });
+  document.body.classList.add("dragging-field");
+  setTimeout(renderColumns, 0);
+}));
+
+const zone = $("#dropZone");
+
+function overZone(e) {
+  const r = zone.getBoundingClientRect();
+  return e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+}
+
+document.addEventListener("dragover", (e => {
+  if (!drag) return;
+  if (overZone(e)) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = drag.header ? "move" : "copy";
+    const i = dropIndex(e.clientX);
+    if (i !== drag.index) {
+      drag.index = i;
+      renderColumns();
+    }
+    return;
+  }
+  if (drag.header) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  }
+  if (drag.index !== null) {
+    drag.index = null;
+    renderColumns();
+  }
+}));
+
+document.addEventListener("drop", (e => {
+  if (!drag) return;
+  e.preventDefault();
+  const {name: name, header: header} = drag, inside = overZone(e), index = inside ? drag.index ?? dropIndex(e.clientX) : null;
+  endDrag();
+  if (inside) placeColumn(name, index); else if (header) removeColumn(name); else renderColumns();
+}));
+
+document.addEventListener("dragend", (() => {
+  if (drag) {
+    endDrag();
+    renderColumns();
+  }
+}));
+
+document.addEventListener("dragover", (e => {
+  if (!drag) return;
+  moveChip(e.clientX, e.clientY);
+  updateChip();
+}));
+
+$("#copyBtn").addEventListener("click", (() => {
+  const done = () => showToast("Query copied. Paste it into Cortex Query Builder.");
+  if (navigator.clipboard?.writeText) navigator.clipboard.writeText(ta.value).then(done, fallback); else fallback();
+  function fallback() {
+    ta.focus();
+    ta.select();
+    showToast("Query selected. Press Ctrl+C to copy.");
+  }
+}));
+
+$("#loadSnip").addEventListener("click", (e => {
+  setQuery(e.target.closest(".body").querySelector("pre.snip").textContent);
+  showToast("Loaded the assistant's query");
+}));
+
+async function sendToAssistant(question) {
+  return {
+    text: "The assistant is not connected yet. This is the template's placeholder reply.",
+    xql: ""
+  };
+}
+
+$("#askForm").addEventListener("submit", (async e => {
+  e.preventDefault();
+  const q = $("#ask").value.trim();
+  if (!q) return;
+  const chat = $("#chat");
+  chat.insertAdjacentHTML("beforeend", `<div class="msg me"><span class="who">You</span><div class="body"><p>${esc(q)}</p></div></div>`);
+  $("#ask").value = "";
+  const r = await sendToAssistant(q);
+  chat.insertAdjacentHTML("beforeend", `<div class="msg ai"><span class="who">Assistant</span><div class="body"><p>${esc(r.text)}</p>${r.xql ? `<pre class="snip">${esc(r.xql)}</pre>` : ""}</div></div>`);
+  chat.scrollTop = chat.scrollHeight;
+}));
+
+$("#ask").addEventListener("keydown", (e => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    $("#askForm").requestSubmit();
+  }
+}));
+
+const ASSISTANT_DEFAULT_VISIBLE = false;
+
+let assistantOn = ASSISTANT_DEFAULT_VISIBLE;
+
+try {
+  const s = localStorage.getItem("huntdesk-assistant");
+  if (s !== null) assistantOn = s === "1";
+} catch {}
+
+function applyAssistant() {
+  $("#assistantPane").hidden = !assistantOn;
+  $("#assistantPill").hidden = !assistantOn;
+  $("main.desk").classList.toggle("no-assistant", !assistantOn);
+  $("#assistantBtn").setAttribute("aria-pressed", assistantOn);
+  $("#assistantBtn").title = assistantOn ? "Hide the assistant" : "Show the assistant";
+}
+
+$("#assistantBtn").addEventListener("click", (() => {
+  assistantOn = !assistantOn;
+  try {
+    localStorage.setItem("huntdesk-assistant", assistantOn ? "1" : "0");
+  } catch {}
+  applyAssistant();
+}));
+
+const THEMES = [ "system", "light", "dark" ];
+
+let theme = "system";
+
+try {
+  theme = localStorage.getItem("huntdesk-theme") || "system";
+} catch {}
+
+function applyTheme() {
+  if (theme === "system") document.documentElement.removeAttribute("data-theme"); else document.documentElement.setAttribute("data-theme", theme);
+  const icon = {
+    system: "i-auto",
+    light: "i-sun",
+    dark: "i-moon"
+  }[theme];
+  $("#themeBtn").innerHTML = `<svg class="i"><use href="#${icon}"/></svg>`;
+  $("#themeBtn").setAttribute("aria-label", `Color theme: ${theme}. Click to change.`);
+  $("#themeBtn").title = `Theme: ${theme}`;
+}
+
+$("#themeBtn").addEventListener("click", (() => {
+  theme = THEMES[(THEMES.indexOf(theme) + 1) % 3];
+  try {
+    localStorage.setItem("huntdesk-theme", theme);
+  } catch {}
+  applyTheme();
+}));
+
+let toastT;
+
+function showToast(msg) {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastT);
+  toastT = setTimeout((() => t.classList.remove("show")), 2200);
+}
+
+applyTheme();
+
+applyAssistant();
+
+renderFields();
+
+renderQuestions();
+
+renderForm();
+
+applyRecipe();
+</script>
+</body>
+</html>
