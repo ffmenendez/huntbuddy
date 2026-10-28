@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>HuntBuddy XQL</title>
+<title>HuntBuddy</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -118,9 +118,31 @@ header.top {
 .mark i:nth-child(2) { background: var(--ochre-bg); }
 .mark i:nth-child(3) { background: var(--ink); }
 .mark i:nth-child(4) { background: var(--line-2); }
+.brand { position: relative; }
 .brand h1 { margin: 0; font: 750 19px/1 var(--f-display); letter-spacing: -.02em; }
 .brand h1 span { color: var(--accent); }
 .brand .sub { color: var(--ink-3); font-size: 12.5px; padding-left: 12px; border-left: 1px solid var(--line); }
+.dest-btn {
+  display: inline-flex; align-items: center; gap: 6px; height: 34px; margin-left: -6px; padding: 0 6px;
+  border: 1px solid transparent; border-radius: var(--r-sm); background: transparent; font: inherit; letter-spacing: inherit;
+}
+.dest-btn:hover, .dest-btn[aria-expanded="true"] { background: var(--sunk); }
+.dest-btn .chev { width: 14px; height: 14px; color: var(--ink-3); transition: transform .15s; }
+.dest-btn[aria-expanded="true"] .chev { transform: rotate(180deg); }
+.dest-menu {
+  position: absolute; left: 30px; top: calc(100% + 8px); z-index: 30; min-width: 300px; margin: 0; padding: 6px;
+  list-style: none; background: var(--raised); border: 1px solid var(--line-2); border-radius: var(--r); box-shadow: var(--shadow);
+}
+.dest-opt {
+  width: 100%; display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 1px 10px; align-items: start;
+  padding: 9px 10px; border: 0; border-radius: var(--r-sm); background: transparent; text-align: left;
+}
+.dest-opt:hover, .dest-opt:focus-visible { background: var(--sunk); outline: none; }
+.dest-opt .tick { grid-row: span 2; margin-top: 2px; color: var(--accent); visibility: hidden; }
+.dest-opt[aria-checked="true"] .tick { visibility: visible; }
+.dest-opt b { font: 650 14px/1.3 var(--f-display); }
+.dest-opt b span { color: var(--accent); }
+.dest-opt small { font-size: 12px; color: var(--ink-3); }
 .top-meta { display: flex; gap: 6px; align-items: center; margin-left: auto; }
 .chip {
   box-shadow: inset 0 1px 2px rgba(0,0,0,.08);
@@ -389,6 +411,8 @@ td.ghost > span { font-style: italic; }
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
   <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
   <symbol id="i-swap" viewBox="0 0 24 24"><path d="M7 7h12l-3-3M17 17H5l3 3"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
   <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></symbol>
@@ -410,11 +434,12 @@ td.ghost > span { font-style: italic; }
   <div class="top-inner">
     <div class="brand">
       <div class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-      <h1>HuntBuddy <span>XQL</span></h1>
-      <span class="sub">Cortex threat hunting</span>
+      <h1><button class="dest-btn" id="destBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="destMenu" title="Choose where the query will run">HuntBuddy <span id="destTag">XQL</span><svg class="i chev" aria-hidden="true"><use href="#i-chev"/></svg></button></h1>
+      <span class="sub" id="destSub">Cortex threat hunting</span>
+      <div class="dest-menu" id="destMenu" role="menu" aria-label="Query destination" hidden></div>
     </div>
     <div class="top-meta">
-      <span class="chip" title="Targets the unified xdr_data model. Older tenants with named datasets need different queries."><span class="mono">xdr_data</span></span>
+      <span class="chip" id="destChip"><span class="mono"></span></span>
       <span class="chip" id="assistantPill"><span class="dot"></span>Assistant offline</span>
       <button class="iconbtn" id="assistantBtn" type="button" aria-controls="assistantPane" aria-pressed="false"><svg class="i"><use href="#i-chat"/></svg><span>Assistant</span></button>
       <button class="iconbtn" id="themeBtn" type="button" aria-label="Color theme: system"><svg class="i"><use href="#i-auto"/></svg></button>
@@ -464,7 +489,7 @@ td.ghost > span { font-style: italic; }
     <div class="canvas">
       <div class="intro">
         <h2 id="wk-h">Find the process and the person behind an event</h2>
-        <p>Pick a hunt, fill in what you already know, arrange the columns you want back, then copy the query into Cortex Query Builder. The time range travels with the query.</p>
+        <p id="introText">Pick a hunt, fill in what you already know, arrange the columns you want back, then copy the query into Cortex Query Builder. The time range travels with the query.</p>
       </div>
 
       <div class="step">
@@ -524,7 +549,7 @@ td.ghost > span { font-style: italic; }
   <aside class="assistant" id="assistantPane" aria-labelledby="as-h">
     <div class="rail-head">
       <h2 id="as-h">Assistant</h2>
-      <p>Ask in plain words. Answers come back as XQL you can load into the editor.</p>
+      <p id="railText">Ask in plain words. Answers come back as XQL you can load into the editor.</p>
     </div>
     <div class="chat" id="chat">
       <div class="msg me"><span class="who">You</span><div class="body"><p>Which process on FIN-LT-0442 talked to 185.220.101.4, and under which account?</p></div></div>
@@ -558,7 +583,7 @@ config timeframe = 24h
 <div class="drag-chip" id="dragChip" hidden aria-hidden="true"><span class="dc-dot"></span><span class="dc-x"><svg class="i"><use href="#i-x"/></svg></span><span class="dc-name"></span><span class="dc-act"></span></div>
 
 <script>
-const FIELDS = [ {
+const XQL_FIELDS = [ {
   name: "causality_actor_process_image_name",
   role: "causality",
   kind: "process",
@@ -908,7 +933,7 @@ const FIELDS = [ {
 
 const ROLES = [ "causality", "actor", "action", "dst", "context" ];
 
-const ROLE_LABEL = {
+const XQL_ROLE_LABEL = {
   causality: "Root cause",
   actor: "Initiator",
   action: "Target",
@@ -934,12 +959,19 @@ const KIND_LABEL = {
   host: "Host & event"
 };
 
-const ROLE_PREFIX = {
+const XQL_ROLE_PREFIX = {
   causality: "causality_actor_*",
   actor: "actor_* · os_actor_*",
   action: "action_* · dns_*",
   dst: "dst_*",
   context: "agent_* · event_* · _time"
+};
+
+const XQL_NOTES = {
+  causality: "<b>Root cause</b> is where the process chain started, such as the Office app that launched a script. Prefix <code>causality_actor_</code>.",
+  actor: "<b>Initiator</b> is the process and account that made the connection or wrote the file. Prefix <code>actor_</code>, or <code>os_actor_</code> when code was injected.",
+  action: "<b>Target</b> is what was touched: the remote IP or hostname, the file, or the child process. Prefix <code>action_</code> and <code>dns_</code>.",
+  dst: "<b>Other endpoint</b> is the far host in a cross-host event, such as lateral movement or a remote logon. For ordinary outbound traffic, use Target. Prefix <code>dst_</code>."
 };
 
 const RECIPE_LOOK = {
@@ -950,8 +982,6 @@ const RECIPE_LOOK = {
   proc: [ "i-pulse", "var(--plum)", "var(--plum-soft)" ],
   start: [ "i-search", "var(--plum)", "var(--plum-soft)" ]
 };
-
-const FIELD_BY_NAME = Object.fromEntries(FIELDS.map((f => [ f.name, f ])));
 
 const time = {
   range: "7d",
@@ -984,14 +1014,14 @@ function windowError() {
   return "";
 }
 
-function timeframeStage() {
+function xqlTimeframe() {
   if (time.range !== "custom") return `config timeframe = ${time.range}`;
   const err = windowError();
   if (err) return `// ${err}\nconfig timeframe = 24h`;
   return `config timeframe between "${stamp(time.from)}" and "${stamp(time.to)}"`;
 }
 
-const RECIPES = [ {
+const XQL_RECIPES = [ {
   id: "conn",
   title: "Who made this connection?",
   sub: "Process and user behind an IP",
@@ -1004,7 +1034,7 @@ const RECIPES = [ {
     label: "Host (optional)",
     value: ""
   } ],
-  build: v => [ `// Which process and account opened outgoing connections to ${v.ip}?`, timeframeStage(), `| dataset = xdr_data`, `| filter event_type = ENUM.NETWORK and action_network_is_server = false`, `| filter action_remote_ip = "${v.ip}"${v.host ? ` and agent_hostname = "${v.host}"` : ""}`, `| fields _time, agent_hostname, actor_effective_username, actor_process_image_name, actor_process_command_line, causality_actor_process_image_name, action_remote_ip, action_remote_port`, `| sort desc _time`, `| limit 200` ].join("\n"),
+  build: v => [ `// Which process and account opened outgoing connections to ${v.ip}?`, xqlTimeframe(), `| dataset = xdr_data`, `| filter event_type = ENUM.NETWORK and action_network_is_server = false`, `| filter action_remote_ip = "${v.ip}"${v.host ? ` and agent_hostname = "${v.host}"` : ""}`, `| fields _time, agent_hostname, actor_effective_username, actor_process_image_name, actor_process_command_line, causality_actor_process_image_name, action_remote_ip, action_remote_port`, `| sort desc _time`, `| limit 200` ].join("\n"),
   rows: [ {
     _time: "2026-10-22 14:03:11",
     agent_hostname: "FIN-LT-0442",
@@ -1068,7 +1098,7 @@ const RECIPES = [ {
     const hashField = hash.length === 32 ? "action_file_md5" : "action_file_sha256";
     const conds = [ v.path && `action_file_path contains "${v.path}"`, hash && `${hashField} = "${hash}"`, v.ext && `action_file_extension = "${v.ext}"` ].filter(Boolean);
     const what = [ v.path && `under ${v.path}`, hash && `with hash ${hash}` ].filter(Boolean).join(" and ") || "anywhere";
-    return [ `// Which process and account wrote files ${what}?`, ...hash && hash.length !== 32 && hash.length !== 64 ? [ `// That hash is ${hash.length} characters: SHA-256 is 64 and MD5 is 32.` ] : [], timeframeStage(), ...{
+    return [ `// Which process and account wrote files ${what}?`, ...hash && hash.length !== 32 && hash.length !== 64 ? [ `// That hash is ${hash.length} characters: SHA-256 is 64 and MD5 is 32.` ] : [], xqlTimeframe(), ...{
       dataset: [ `| dataset = xdr_data`, `| filter event_type = ENUM.FILE` ],
       writes: [ `| dataset = xdr_data`, `// event_sub_type names are untested`, `| filter event_type = ENUM.FILE and event_sub_type in (ENUM.FILE_WRITE, ENUM.FILE_CREATE_NEW)` ],
       preset: [ `| preset = xdr_file` ]
@@ -1106,7 +1136,7 @@ const RECIPES = [ {
     label: "Username contains",
     value: "jdoe"
   } ],
-  build: v => [ `// Processes started by accounts matching "${v.user}"`, timeframeStage(), `| dataset = xdr_data`, `| filter event_type = ENUM.PROCESS and actor_effective_username contains "${v.user}"`, `| fields _time, agent_hostname, actor_effective_username, actor_primary_username, actor_process_image_name, action_process_image_name, action_process_image_command_line`, `| sort desc _time`, `| limit 200` ].join("\n"),
+  build: v => [ `// Processes started by accounts matching "${v.user}"`, xqlTimeframe(), `| dataset = xdr_data`, `| filter event_type = ENUM.PROCESS and actor_effective_username contains "${v.user}"`, `| fields _time, agent_hostname, actor_effective_username, actor_primary_username, actor_process_image_name, action_process_image_name, action_process_image_command_line`, `| sort desc _time`, `| limit 200` ].join("\n"),
   rows: [ {
     _time: "2026-10-22 14:02:55",
     agent_hostname: "FIN-LT-0442",
@@ -1133,7 +1163,7 @@ const RECIPES = [ {
     label: "Domain contains",
     value: "pastebin.com"
   } ],
-  build: v => [ `// Which processes and accounts connect to or look up *${v.domain}*?`, timeframeStage(), `| dataset = xdr_data`, `| filter action_external_hostname contains "${v.domain}" or dns_query_name contains "${v.domain}"`, `| comp count() as hits by actor_process_image_name, actor_effective_username, agent_hostname`, `| sort desc hits`, `| limit 100` ].join("\n"),
+  build: v => [ `// Which processes and accounts connect to or look up *${v.domain}*?`, xqlTimeframe(), `| dataset = xdr_data`, `| filter action_external_hostname contains "${v.domain}" or dns_query_name contains "${v.domain}"`, `| comp count() as hits by actor_process_image_name, actor_effective_username, agent_hostname`, `| sort desc hits`, `| limit 100` ].join("\n"),
   rows: [ {
     actor_process_image_name: "chrome.exe",
     actor_effective_username: "CORP\\asmith",
@@ -1198,7 +1228,7 @@ const RECIPES = [ {
       cmd: `processes whose command line contains "${v.val}"`,
       inst: `process instance ${v.val}`
     }[v.by];
-    return [ `// Timeline of what ${who} did${chain ? ", and everything it started" : ""}`, ...v.scope === "chain" && v.by === "inst" ? [ `// An instance ID names one process, so Scope is limited to that process.` ] : [], timeframeStage(), `| dataset = xdr_data`, `| filter ${match}${v.host ? ` and agent_hostname = "${v.host}"` : ""}`, `// hunt_target is picked by event_type (the role-flip rule). Some Process events have no command line`, `| filter ${typeFilter}`, `| alter hunt_target = if(event_type = ENUM.FILE, action_file_path,`, `                      if(event_type = ENUM.REGISTRY, action_registry_key_name,`, `                      if(event_type = ENUM.NETWORK, action_remote_ip, action_process_image_command_line)))`, `// PROCESS_STOP rows have no name or command line; look up the PROCESS_START with the same action_process_instance_id`, `| fields _time, event_type, event_sub_type, hunt_target, actor_process_image_name, actor_effective_username, agent_hostname, action_remote_port, action_file_sha256, action_process_instance_id`, `| sort asc _time`, `| limit 1000` ].join("\n");
+    return [ `// Timeline of what ${who} did${chain ? ", and everything it started" : ""}`, ...v.scope === "chain" && v.by === "inst" ? [ `// An instance ID names one process, so Scope is limited to that process.` ] : [], xqlTimeframe(), `| dataset = xdr_data`, `| filter ${match}${v.host ? ` and agent_hostname = "${v.host}"` : ""}`, `// hunt_target is picked by event_type (the role-flip rule). Some Process events have no command line`, `| filter ${typeFilter}`, `| alter hunt_target = if(event_type = ENUM.FILE, action_file_path,`, `                      if(event_type = ENUM.REGISTRY, action_registry_key_name,`, `                      if(event_type = ENUM.NETWORK, action_remote_ip, action_process_image_command_line)))`, `// PROCESS_STOP rows have no name or command line; look up the PROCESS_START with the same action_process_instance_id`, `| fields _time, event_type, event_sub_type, hunt_target, actor_process_image_name, actor_effective_username, agent_hostname, action_remote_port, action_file_sha256, action_process_instance_id`, `| sort asc _time`, `| limit 1000` ].join("\n");
   },
   rows: [ {
     _time: "2026-10-22 14:02:57",
@@ -1265,7 +1295,7 @@ const RECIPES = [ {
     value: "AdcV1L0Dq2kAAA0xAAAAAA==",
     help: "action_process_instance_id from the blank row. Click one in the results to fill it in."
   } ],
-  build: v => [ `// Start event of process instance ${v.inst}. Stop and PID-only rows carry no name or command line`, ...time.range === "24h" ? [ `// The process may have started before this window. Use 7 days or more.` ] : [], timeframeStage(), `| dataset = xdr_data`, `| filter event_type = ENUM.PROCESS and action_process_instance_id = "${v.inst}"`, `| fields _time, event_type, event_sub_type, agent_hostname, action_process_image_name, action_process_image_command_line, actor_process_image_name, actor_effective_username, action_process_instance_id`, `| sort asc _time` ].join("\n"),
+  build: v => [ `// Start event of process instance ${v.inst}. Stop and PID-only rows carry no name or command line`, ...time.range === "24h" ? [ `// The process may have started before this window. Use 7 days or more.` ] : [], xqlTimeframe(), `| dataset = xdr_data`, `| filter event_type = ENUM.PROCESS and action_process_instance_id = "${v.inst}"`, `| fields _time, event_type, event_sub_type, agent_hostname, action_process_image_name, action_process_image_command_line, actor_process_image_name, actor_effective_username, action_process_instance_id`, `| sort asc _time` ].join("\n"),
   rows: [ {
     _time: "2026-10-22 14:03:15",
     event_type: "PROCESS",
@@ -1289,13 +1319,881 @@ const RECIPES = [ {
   } ]
 } ];
 
+const KQL_TABLES = {
+  net: "DeviceNetworkEvents",
+  proc: "DeviceProcessEvents",
+  file: "DeviceFileEvents",
+  reg: "DeviceRegistryEvents",
+  logon: "DeviceLogonEvents",
+  ev: "DeviceEvents"
+};
+
+const KQL_TABLE_SHORT = {
+  net: "Network",
+  proc: "Process",
+  file: "File",
+  reg: "Registry",
+  logon: "Logon",
+  ev: "Events"
+};
+
+const EVERY = Object.keys(KQL_TABLES);
+
+const KQL_FIELDS = [ {
+  name: "InitiatingProcessParentFileName",
+  role: "causality",
+  kind: "process",
+  desc: "Parent of the initiating process, e.g. outlook.exe that started powershell.exe. Defender keeps one parent level, not the whole chain.",
+  tags: [ "parent", "chain" ],
+  tables: EVERY
+}, {
+  name: "InitiatingProcessParentId",
+  role: "causality",
+  kind: "process",
+  desc: "PID of the parent. The OS reuses PIDs, so pair it with the parent's creation time and the device.",
+  tables: EVERY
+}, {
+  name: "InitiatingProcessParentCreationTime",
+  role: "causality",
+  kind: "process",
+  desc: "When the parent process started.",
+  tags: [ "timeline" ],
+  tables: EVERY
+}, {
+  name: "InitiatingProcessFileName",
+  role: "actor",
+  kind: "process",
+  desc: "Process that made the connection, wrote the file or started the new process.",
+  tables: EVERY
+}, {
+  name: "InitiatingProcessFolderPath",
+  role: "actor",
+  kind: "process",
+  desc: "Folder of the initiating binary. Documented as the folder; check whether your rows also include the file name.",
+  tables: EVERY
+}, {
+  name: "InitiatingProcessCommandLine",
+  role: "actor",
+  kind: "process",
+  desc: "Command line of the initiating process.",
+  tables: EVERY
+}, {
+  name: "InitiatingProcessSHA1",
+  role: "actor",
+  kind: "process",
+  desc: "SHA-1 of the initiating binary. The hash Microsoft recommends, because SHA-256 is usually empty.",
+  tags: [ "hash" ],
+  tables: EVERY
+}, {
+  name: "InitiatingProcessSHA256",
+  role: "actor",
+  kind: "process",
+  desc: "SHA-256 of the initiating binary. Documented as usually not populated: prefer SHA-1.",
+  tags: [ "hash" ],
+  tables: EVERY,
+  blank: true
+}, {
+  name: "InitiatingProcessMD5",
+  role: "actor",
+  kind: "process",
+  desc: "MD5 of the initiating binary.",
+  tags: [ "hash" ],
+  tables: EVERY
+}, {
+  name: "InitiatingProcessUniqueId",
+  role: "actor",
+  kind: "process",
+  desc: "Process Start Key of the initiator. Follows one process across tables; unique per device, not across devices.",
+  tags: [ "pivot", "join", "lookup" ],
+  tables: EVERY
+}, {
+  name: "InitiatingProcessId",
+  role: "actor",
+  kind: "process",
+  desc: "OS process ID. Reused by the OS, so pair it with InitiatingProcessCreationTime and the device.",
+  tables: EVERY
+}, {
+  name: "InitiatingProcessCreationTime",
+  role: "actor",
+  kind: "process",
+  desc: "When the initiating process started.",
+  tags: [ "timeline" ],
+  tables: EVERY
+}, {
+  name: "InitiatingProcessVersionInfoOriginalFileName",
+  role: "actor",
+  kind: "process",
+  desc: "Original name from the binary's version info. When it differs from the file name, the binary was renamed.",
+  tags: [ "rename", "masquerade", "lolbin" ],
+  tables: EVERY
+}, {
+  name: "InitiatingProcessSignatureStatus",
+  role: "actor",
+  kind: "process",
+  desc: "Signature status of the initiating binary. Only in DeviceProcessEvents.",
+  tags: [ "unsigned", "signing" ],
+  tables: [ "proc" ]
+}, {
+  name: "InitiatingProcessIntegrityLevel",
+  role: "actor",
+  kind: "process",
+  desc: "Windows integrity level, e.g. Low for a downloaded file, High or System for elevated code.",
+  tags: [ "elevation", "privilege" ],
+  tables: EVERY
+}, {
+  name: "InitiatingProcessTokenElevation",
+  role: "actor",
+  kind: "process",
+  desc: "Whether UAC elevation was applied to the initiator's token.",
+  tags: [ "elevation", "uac", "privilege" ],
+  tables: EVERY
+}, {
+  name: "InitiatingProcessAccountName",
+  role: "actor",
+  kind: "user",
+  desc: "Account the initiating process ran as, without the domain.",
+  tags: [ "who" ],
+  tables: EVERY
+}, {
+  name: "InitiatingProcessAccountDomain",
+  role: "actor",
+  kind: "user",
+  desc: "Domain of the initiating account. Match it together with the account name.",
+  tables: EVERY
+}, {
+  name: "InitiatingProcessAccountUpn",
+  role: "actor",
+  kind: "user",
+  desc: "UPN of the initiating account, e.g. jdoe@corp.example. Empty for local and service accounts.",
+  tags: [ "who", "entra" ],
+  tables: EVERY,
+  blank: true
+}, {
+  name: "InitiatingProcessAccountSid",
+  role: "actor",
+  kind: "user",
+  desc: "SID of the initiating account.",
+  tables: EVERY
+}, {
+  name: "IsInitiatingProcessRemoteSession",
+  role: "actor",
+  kind: "process",
+  desc: "True when the initiator ran in an RDP session.",
+  tags: [ "rdp", "lateral" ],
+  tables: EVERY
+}, {
+  name: "RemoteIP",
+  role: "action",
+  kind: "network",
+  desc: "IP that was connected to. In DeviceLogonEvents it is where the logon came from.",
+  tags: [ "destination" ],
+  tables: [ "net", "logon", "ev" ]
+}, {
+  name: "RemotePort",
+  role: "action",
+  kind: "network",
+  desc: "Remote port of the connection.",
+  tables: [ "net", "logon", "ev" ]
+}, {
+  name: "RemoteUrl",
+  role: "action",
+  kind: "network",
+  desc: "URL or FQDN being connected to. Only filled when Defender saw the name, so it is empty on many rows.",
+  tags: [ "domain", "proxy", "dns" ],
+  tables: [ "net", "ev" ],
+  blank: true
+}, {
+  name: "LocalIP",
+  role: "action",
+  kind: "network",
+  desc: "Source IP on this device.",
+  tables: [ "net", "ev" ]
+}, {
+  name: "LocalPort",
+  role: "action",
+  kind: "network",
+  desc: "Source port on this device.",
+  tables: [ "net", "ev" ]
+}, {
+  name: "Protocol",
+  role: "action",
+  kind: "network",
+  desc: "Protocol of the connection, e.g. Tcp or Udp.",
+  tables: [ "net", "logon" ]
+}, {
+  name: "RemoteIPType",
+  role: "action",
+  kind: "network",
+  desc: "Public, Private, Loopback and others. Filter to Public to skip internal traffic.",
+  tags: [ "external", "internet" ],
+  tables: [ "net", "logon" ]
+}, {
+  name: "FileName",
+  role: "action",
+  kind: "file",
+  desc: "In DeviceFileEvents, the file written. In DeviceProcessEvents, the binary of the process that was started.",
+  tables: [ "file", "proc", "ev" ]
+}, {
+  name: "FolderPath",
+  role: "action",
+  kind: "file",
+  desc: "Folder of FileName, with the same split by table: the written file, or the started binary.",
+  tables: [ "file", "proc", "ev" ]
+}, {
+  name: "SHA1",
+  role: "action",
+  kind: "file",
+  desc: "SHA-1 of FileName. Use it over SHA256, which is usually empty.",
+  tags: [ "hash" ],
+  tables: [ "file", "proc", "ev" ]
+}, {
+  name: "SHA256",
+  role: "action",
+  kind: "file",
+  desc: "SHA-256 of FileName. Documented as usually not populated.",
+  tags: [ "hash" ],
+  tables: [ "file", "proc", "ev" ],
+  blank: true
+}, {
+  name: "MD5",
+  role: "action",
+  kind: "file",
+  desc: "MD5 of FileName. Still a common threat-intel pivot.",
+  tags: [ "hash" ],
+  tables: [ "file", "proc", "ev" ]
+}, {
+  name: "FileSize",
+  role: "action",
+  kind: "file",
+  desc: "Size of FileName in bytes.",
+  tables: [ "file", "proc" ]
+}, {
+  name: "PreviousFolderPath",
+  role: "action",
+  kind: "file",
+  desc: "Folder before a rename or move.",
+  tags: [ "rename" ],
+  tables: [ "file" ],
+  blank: true
+}, {
+  name: "PreviousFileName",
+  role: "action",
+  kind: "file",
+  desc: "File name before a rename.",
+  tags: [ "rename" ],
+  tables: [ "file" ],
+  blank: true
+}, {
+  name: "FileOriginUrl",
+  role: "action",
+  kind: "file",
+  desc: "URL the file was downloaded from. Answers 'where did this come from' for browser downloads.",
+  tags: [ "download", "origin" ],
+  tables: [ "file", "ev" ],
+  blank: true
+}, {
+  name: "RegistryKey",
+  role: "action",
+  kind: "registry",
+  desc: "Registry key that was created, changed or deleted.",
+  tags: [ "persistence", "run key" ],
+  tables: [ "reg", "ev" ]
+}, {
+  name: "RegistryValueName",
+  role: "action",
+  kind: "registry",
+  desc: "Registry value name under the key.",
+  tags: [ "persistence" ],
+  tables: [ "reg", "ev" ]
+}, {
+  name: "RegistryValueData",
+  role: "action",
+  kind: "registry",
+  desc: "Data written to the registry value.",
+  tags: [ "persistence" ],
+  tables: [ "reg", "ev" ]
+}, {
+  name: "PreviousRegistryValueData",
+  role: "action",
+  kind: "registry",
+  desc: "Value data before the change.",
+  tags: [ "persistence" ],
+  tables: [ "reg" ],
+  blank: true
+}, {
+  name: "ProcessCommandLine",
+  role: "action",
+  kind: "process",
+  desc: "Command line of the process that was started.",
+  tables: [ "proc", "ev" ]
+}, {
+  name: "ProcessUniqueId",
+  role: "action",
+  kind: "process",
+  desc: "Process Start Key of the started process. Equals InitiatingProcessUniqueId on that process's own later events.",
+  tags: [ "pivot", "lookup" ],
+  tables: [ "proc" ]
+}, {
+  name: "ProcessId",
+  role: "action",
+  kind: "process",
+  desc: "OS PID of the started process.",
+  tables: [ "proc", "ev" ]
+}, {
+  name: "ProcessCreationTime",
+  role: "action",
+  kind: "process",
+  desc: "When the started process was created.",
+  tags: [ "timeline" ],
+  tables: [ "proc", "ev" ]
+}, {
+  name: "ProcessVersionInfoOriginalFileName",
+  role: "action",
+  kind: "process",
+  desc: "Original name from the started binary's version info. Catches renamed copies of tools.",
+  tags: [ "rename", "masquerade", "lolbin" ],
+  tables: [ "proc" ]
+}, {
+  name: "AccountName",
+  role: "action",
+  kind: "user",
+  desc: "In DeviceProcessEvents, the account the started process runs as. In DeviceLogonEvents, the account that logged on.",
+  tags: [ "who", "logon" ],
+  tables: [ "proc", "logon", "ev" ]
+}, {
+  name: "AccountDomain",
+  role: "action",
+  kind: "user",
+  desc: "Domain of AccountName.",
+  tables: [ "proc", "logon", "ev" ]
+}, {
+  name: "RemoteDeviceName",
+  role: "dst",
+  kind: "host",
+  desc: "Device that performed a remote operation here, e.g. the source of a network logon. FQDN, NetBIOS or bare name.",
+  tags: [ "lateral", "logon" ],
+  tables: [ "logon", "ev" ],
+  blank: true
+}, {
+  name: "InitiatingProcessRemoteSessionDeviceName",
+  role: "dst",
+  kind: "host",
+  desc: "Device the RDP session came from, when the initiator ran in one.",
+  tags: [ "rdp", "lateral" ],
+  tables: EVERY,
+  blank: true
+}, {
+  name: "InitiatingProcessRemoteSessionIP",
+  role: "dst",
+  kind: "network",
+  desc: "IP the RDP session came from.",
+  tags: [ "rdp", "lateral" ],
+  tables: EVERY,
+  blank: true
+}, {
+  name: "RequestSourceIP",
+  role: "dst",
+  kind: "network",
+  desc: "IP of the remote device that wrote the file, e.g. over SMB. Empty for local writes.",
+  tags: [ "lateral", "smb" ],
+  tables: [ "file" ],
+  blank: true
+}, {
+  name: "RequestAccountName",
+  role: "dst",
+  kind: "user",
+  desc: "Account used to write the file remotely.",
+  tags: [ "lateral", "smb" ],
+  tables: [ "file" ],
+  blank: true
+}, {
+  name: "Timestamp",
+  role: "context",
+  kind: "host",
+  desc: "Event time, UTC. In Microsoft Sentinel the same column is TimeGenerated.",
+  tags: [ "sentinel" ],
+  tables: EVERY
+}, {
+  name: "DeviceName",
+  role: "context",
+  kind: "host",
+  desc: "Device where the event was seen, usually as an FQDN. Match with startswith or has, not ==.",
+  tables: EVERY
+}, {
+  name: "DeviceId",
+  role: "context",
+  kind: "host",
+  desc: "Defender device ID. Stable when the name changes.",
+  tables: EVERY
+}, {
+  name: "ActionType",
+  role: "context",
+  kind: "host",
+  desc: "What happened, e.g. ConnectionSuccess, FileCreated, RegistryValueSet, ProcessCreated. Values differ per table.",
+  tables: EVERY
+}, {
+  name: "LogonType",
+  role: "context",
+  kind: "host",
+  desc: "Interactive, RemoteInteractive (RDP), Network, Batch, Service and others.",
+  tags: [ "rdp", "logon" ],
+  tables: [ "logon" ]
+}, {
+  name: "ReportId",
+  role: "context",
+  kind: "host",
+  desc: "Event ID, unique together with DeviceId and Timestamp.",
+  tables: EVERY
+}, {
+  name: "AdditionalFields",
+  role: "context",
+  kind: "host",
+  desc: "JSON with extra detail for some action types. Read keys with parse_json().",
+  tags: [ "json" ],
+  tables: [ "net", "proc", "file", "logon", "ev" ]
+} ].map((f => ({
+  schema: true,
+  blank: false,
+  tags: [],
+  tables: [],
+  ...f
+})));
+
+const KQL_ROLE_LABEL = {
+  causality: "Parent",
+  actor: "Initiator",
+  action: "Target",
+  dst: "Remote side",
+  context: "Device & event"
+};
+
+const KQL_ROLE_PREFIX = {
+  causality: "InitiatingProcessParent*",
+  actor: "InitiatingProcess*",
+  action: "Remote* · File* · Registry* · Process*",
+  dst: "*RemoteSession* · Request*",
+  context: "Timestamp · Device* · ActionType"
+};
+
+const kq = v => /\\/.test(v) ? `@"${v.replace(/"/g, '""')}"` : `"${v.replace(/["\\]/g, "\\$&")}"`;
+
+function kqlTimeframe() {
+  if (time.range !== "custom") return `| where Timestamp > ago(${time.range})`;
+  const err = windowError();
+  if (err) return `// ${err}\n| where Timestamp > ago(24h)`;
+  const utc = v => time.zone === "utc" ? `${withSeconds(v)}Z` : new Date(withSeconds(v)).toISOString().replace(".000Z", "Z");
+  return `| where Timestamp between (datetime(${utc(time.from)}) .. datetime(${utc(time.to)}))`;
+}
+
+const hashColumn = (h, pre = "") => ({
+  32: `${pre}MD5`,
+  40: `${pre}SHA1`,
+  64: `${pre}SHA256`
+}[h.length] || `${pre}SHA1`);
+
+const OUTBOUND = `ActionType in ("ConnectionSuccess", "ConnectionAttempt", "ConnectionFailed")`;
+
+const KQL_RECIPES = [ {
+  id: "conn",
+  title: "Who made this connection?",
+  sub: "Process and user behind an IP",
+  inputs: [ {
+    id: "ip",
+    label: "Remote IP",
+    value: "185.220.101.4"
+  }, {
+    id: "host",
+    label: "Host (optional)",
+    value: "",
+    help: "Matches the start of DeviceName, so a short name finds the FQDN."
+  } ],
+  build: v => [ `// Which process and account opened outgoing connections to ${v.ip}?`, `DeviceNetworkEvents`, kqlTimeframe(), `| where RemoteIP == ${kq(v.ip)}${v.host ? ` and DeviceName startswith ${kq(v.host)}` : ""}`, `| where ${OUTBOUND}`, `| project Timestamp, DeviceName, InitiatingProcessAccountDomain, InitiatingProcessAccountName, InitiatingProcessFileName, InitiatingProcessCommandLine, InitiatingProcessParentFileName, RemoteIP, RemotePort, RemoteUrl`, `| sort by Timestamp desc`, `| take 200` ].join("\n"),
+  rows: [ {
+    Timestamp: "2026-10-22 14:03:11",
+    DeviceName: "fin-lt-0442.corp.example",
+    InitiatingProcessAccountDomain: "corp",
+    InitiatingProcessAccountName: "jdoe",
+    InitiatingProcessFileName: "powershell.exe",
+    InitiatingProcessCommandLine: "powershell -nop -w hidden -enc JAB...",
+    InitiatingProcessParentFileName: "outlook.exe",
+    RemoteIP: "185.220.101.4",
+    RemotePort: "443",
+    RemoteUrl: "",
+    ActionType: "ConnectionSuccess",
+    InitiatingProcessUniqueId: "1297036692682703"
+  }, {
+    Timestamp: "2026-10-22 14:03:09",
+    DeviceName: "fin-lt-0442.corp.example",
+    InitiatingProcessAccountDomain: "corp",
+    InitiatingProcessAccountName: "jdoe",
+    InitiatingProcessFileName: "powershell.exe",
+    InitiatingProcessCommandLine: "powershell -nop -w hidden -enc JAB...",
+    InitiatingProcessParentFileName: "outlook.exe",
+    RemoteIP: "185.220.101.4",
+    RemotePort: "443",
+    RemoteUrl: "",
+    ActionType: "ConnectionAttempt",
+    InitiatingProcessUniqueId: "1297036692682703"
+  }, {
+    Timestamp: "2026-10-21 09:47:52",
+    DeviceName: "hr-dt-0118.corp.example",
+    InitiatingProcessAccountDomain: "corp",
+    InitiatingProcessAccountName: "asmith",
+    InitiatingProcessFileName: "rundll32.exe",
+    InitiatingProcessCommandLine: "rundll32.exe C:\\Users\\Public\\u.dll,Start",
+    InitiatingProcessParentFileName: "winword.exe",
+    RemoteIP: "185.220.101.4",
+    RemotePort: "8443",
+    RemoteUrl: "cdn-upd.example.net",
+    ActionType: "ConnectionSuccess",
+    InitiatingProcessUniqueId: "2251799813721412"
+  } ]
+}, {
+  id: "file",
+  title: "Who wrote this file?",
+  sub: "Process and user behind a file write",
+  inputs: [ {
+    id: "path",
+    label: "Path contains (optional)",
+    value: "\\AppData\\Local\\Temp\\",
+    help: "Type single backslashes."
+  }, {
+    id: "hash",
+    label: "File hash (optional)",
+    value: "",
+    help: "SHA-1 (40 characters), SHA-256 (64) or MD5 (32). The length picks the column."
+  }, {
+    id: "ext",
+    label: "Extension (optional)",
+    value: "ps1"
+  }, {
+    id: "src",
+    label: "Actions",
+    value: "changes",
+    options: [ [ "changes", "Created and modified files" ], [ "all", "All file actions, incl. rename and delete" ] ]
+  } ],
+  build: v => {
+    const hash = v.hash.replace(/\s+/g, ""), col = hashColumn(hash);
+    const ext = v.ext.replace(/^\./, "");
+    const conds = [ v.path && `FolderPath contains ${kq(v.path)}`, hash && `${col} == ${kq(hash)}`, ext && `FileName endswith ${kq(`.${ext}`)}` ].filter(Boolean);
+    const what = [ v.path && `under ${v.path}`, hash && `with hash ${hash}` ].filter(Boolean).join(" and ") || "anywhere";
+    return [ `// Which process and account wrote files ${what}?`, ...hash && ![ 32, 40, 64 ].includes(hash.length) ? [ `// That hash is ${hash.length} characters: SHA-1 is 40, SHA-256 is 64 and MD5 is 32.` ] : [], ...hash.length === 64 ? [ `// SHA256 is usually empty in DeviceFileEvents. Search by SHA-1 if you have it.` ] : [], `DeviceFileEvents`, kqlTimeframe(), ...v.src === "changes" ? [ `| where ActionType in ("FileCreated", "FileModified")` ] : [], ...conds.length ? [ `| where ${conds.join(" and ")}` ] : [ `// Add a path, a hash or an extension, or this returns every file event.` ], `| project Timestamp, DeviceName, InitiatingProcessAccountName, InitiatingProcessFileName, InitiatingProcessParentFileName, FolderPath, FileName, ${col}`, `| sort by Timestamp desc`, `| take 200` ].join("\n");
+  },
+  rows: [ {
+    Timestamp: "2026-10-22 14:02:58",
+    DeviceName: "fin-lt-0442.corp.example",
+    InitiatingProcessAccountName: "jdoe",
+    InitiatingProcessFileName: "powershell.exe",
+    InitiatingProcessParentFileName: "outlook.exe",
+    FolderPath: "C:\\Users\\jdoe\\AppData\\Local\\Temp\\upd.ps1",
+    FileName: "upd.ps1",
+    SHA1: "3b1f…92ac",
+    SHA256: "",
+    MD5: "5d41…c3f2",
+    ActionType: "FileCreated",
+    FileSize: "4182",
+    RequestSourceIP: ""
+  }, {
+    Timestamp: "2026-10-20 16:20:04",
+    DeviceName: "it-srv-0007.corp.example",
+    InitiatingProcessAccountName: "system",
+    InitiatingProcessFileName: "msiexec.exe",
+    InitiatingProcessParentFileName: "services.exe",
+    FolderPath: "C:\\Windows\\Temp\\MSI4F2A.ps1",
+    FileName: "MSI4F2A.ps1",
+    SHA1: "e0a7…41d8",
+    SHA256: "",
+    MD5: "a87f…09be",
+    ActionType: "FileModified",
+    FileSize: "912",
+    RequestSourceIP: ""
+  } ]
+}, {
+  id: "user",
+  title: "What did this account run?",
+  sub: "Processes started by a user",
+  inputs: [ {
+    id: "user",
+    label: "Username contains",
+    value: "jdoe"
+  } ],
+  build: v => [ `// Processes started under accounts matching "${v.user}"`, `DeviceProcessEvents`, kqlTimeframe(), `| where AccountName contains ${kq(v.user)}`, `| project Timestamp, DeviceName, AccountDomain, AccountName, InitiatingProcessFileName, FileName, ProcessCommandLine`, `| sort by Timestamp desc`, `| take 200` ].join("\n"),
+  rows: [ {
+    Timestamp: "2026-10-22 14:02:55",
+    DeviceName: "fin-lt-0442.corp.example",
+    AccountDomain: "corp",
+    AccountName: "jdoe",
+    InitiatingProcessFileName: "outlook.exe",
+    FileName: "powershell.exe",
+    ProcessCommandLine: "powershell -nop -w hidden -enc JAB...",
+    InitiatingProcessAccountName: "jdoe",
+    ProcessUniqueId: "1297036692682703"
+  }, {
+    Timestamp: "2026-10-22 08:31:10",
+    DeviceName: "fin-lt-0442.corp.example",
+    AccountDomain: "corp",
+    AccountName: "jdoe",
+    InitiatingProcessFileName: "explorer.exe",
+    FileName: "excel.exe",
+    ProcessCommandLine: '"EXCEL.EXE" /dde',
+    InitiatingProcessAccountName: "jdoe",
+    ProcessUniqueId: "1297036692601188"
+  } ]
+}, {
+  id: "domain",
+  title: "Who talks to this domain?",
+  sub: "Processes and users, counted",
+  inputs: [ {
+    id: "domain",
+    label: "Domain contains",
+    value: "pastebin.com"
+  }, {
+    id: "src",
+    label: "Source",
+    value: "conn",
+    options: [ [ "conn", "Connections (RemoteUrl)" ], [ "dns", "Connections and inspected DNS (unverified)" ] ]
+  } ],
+  build: v => [ `// Which processes and accounts connect to *${v.domain}*?`, `DeviceNetworkEvents`, kqlTimeframe(), ...v.src === "dns" ? [ `// DNS rows: ActionType DnsConnectionInspected, name in AdditionalFields.query. Unverified, and the process can be empty on them.`, `| extend DnsQuery = iff(ActionType == "DnsConnectionInspected", tostring(parse_json(AdditionalFields).query), "")`, `| where RemoteUrl contains ${kq(v.domain)} or DnsQuery contains ${kq(v.domain)}` ] : [ `| where RemoteUrl contains ${kq(v.domain)}` ], `| summarize Hits = count() by InitiatingProcessFileName, InitiatingProcessAccountName, DeviceName`, `| sort by Hits desc`, `| take 100` ].join("\n"),
+  rows: [ {
+    InitiatingProcessFileName: "chrome.exe",
+    InitiatingProcessAccountName: "asmith",
+    DeviceName: "hr-dt-0118.corp.example",
+    Hits: "37",
+    InitiatingProcessSHA1: "c0ff…e1a2"
+  }, {
+    InitiatingProcessFileName: "powershell.exe",
+    InitiatingProcessAccountName: "jdoe",
+    DeviceName: "fin-lt-0442.corp.example",
+    Hits: "4",
+    InitiatingProcessSHA1: "de96…a1f0"
+  } ]
+}, {
+  id: "proc",
+  title: "What did this process do?",
+  sub: "Files, registry, connections, executions",
+  inputs: [ {
+    id: "by",
+    label: "Match by",
+    value: "name",
+    options: [ [ "name", "Process name" ], [ "sha", "SHA-1 or SHA-256" ], [ "cmd", "Command line contains" ], [ "inst", "Unique ID (one process)" ] ]
+  }, {
+    id: "val",
+    label: "Value",
+    value: "powershell.exe"
+  }, {
+    id: "scope",
+    label: "Scope",
+    value: "self",
+    options: [ [ "self", "This process only" ], [ "chain", "This process and what it started" ] ]
+  }, {
+    id: "act",
+    label: "Activity",
+    value: "all",
+    options: [ [ "all", "All activity" ], [ "file", "Files" ], [ "reg", "Registry" ], [ "net", "Connections" ], [ "exec", "Executions" ] ]
+  }, {
+    id: "host",
+    label: "Host (optional)",
+    value: ""
+  } ],
+  build: v => {
+    const chain = v.scope === "chain" && v.by === "name";
+    const match = {
+      name: chain ? `(InitiatingProcessFileName =~ ${kq(v.val)} or InitiatingProcessParentFileName =~ ${kq(v.val)})` : `InitiatingProcessFileName =~ ${kq(v.val)}`,
+      sha: `${hashColumn(v.val, "InitiatingProcess")} == ${kq(v.val)}`,
+      cmd: `InitiatingProcessCommandLine contains ${kq(v.val)}`,
+      inst: `InitiatingProcessUniqueId == ${kq(v.val)}`
+    }[v.by];
+    const picked = {
+      all: [ "file", "reg", "net", "exec" ],
+      file: [ "file" ],
+      reg: [ "reg" ],
+      net: [ "net" ],
+      exec: [ "exec" ]
+    }[v.act];
+    const TABLE = {
+      file: "DeviceFileEvents",
+      reg: "DeviceRegistryEvents",
+      net: "DeviceNetworkEvents",
+      exec: "DeviceProcessEvents"
+    };
+    const TARGET = {
+      file: "FolderPath",
+      reg: "RegistryKey",
+      net: "RemoteIP",
+      exec: "ProcessCommandLine"
+    };
+    const target = picked.length === 1 ? TARGET[picked[0]] : `case(${picked.slice(0, -1).map((k => `SourceTable == "${TABLE[k]}", ${TARGET[k]}`)).join(",\n                           ")},\n                           ${TARGET[picked.at(-1)]})`;
+    const extra = [ picked.includes("net") && "RemotePort", (picked.includes("file") || picked.includes("exec")) && "SHA1" ].filter(Boolean);
+    const who = {
+      name: v.val,
+      sha: `the binary with hash ${v.val}`,
+      cmd: `processes whose command line contains "${v.val}"`,
+      inst: `process ${v.val}`
+    }[v.by];
+    return [ `// Timeline of what ${who} did${chain ? ", and what it started directly" : ""}`, ...v.scope === "chain" && v.by !== "name" ? [ `// Defender records only the parent's name, so Scope "what it started" needs a name match.` ] : [], ...chain ? [ `// Defender keeps one parent level, so grandchildren are not included.` ] : [], `union withsource=SourceTable ${picked.map((k => TABLE[k])).join(", ")}`, kqlTimeframe(), `| where ${match}${v.host ? ` and DeviceName startswith ${kq(v.host)}` : ""}`, `// HuntTarget is picked per table: file path, registry key, remote IP, or the started process's command line`, `| extend HuntTarget = ${target}`, `| project Timestamp, SourceTable, ActionType, HuntTarget, InitiatingProcessFileName, InitiatingProcessAccountName, DeviceName, ${[ ...extra, "InitiatingProcessUniqueId" ].join(", ")}`, `| sort by Timestamp asc`, `| take 1000` ].join("\n");
+  },
+  rows: [ {
+    Timestamp: "2026-10-22 14:02:57",
+    SourceTable: "DeviceFileEvents",
+    ActionType: "FileCreated",
+    HuntTarget: "C:\\Users\\jdoe\\AppData\\Local\\Temp\\upd.ps1",
+    InitiatingProcessFileName: "powershell.exe",
+    InitiatingProcessAccountName: "jdoe",
+    DeviceName: "fin-lt-0442.corp.example",
+    SHA1: "3b1f…92ac",
+    InitiatingProcessUniqueId: "1297036692682703",
+    InitiatingProcessCommandLine: "powershell -nop -w hidden -enc JAB...",
+    InitiatingProcessParentFileName: "outlook.exe"
+  }, {
+    Timestamp: "2026-10-22 14:02:58",
+    SourceTable: "DeviceRegistryEvents",
+    ActionType: "RegistryValueSet",
+    HuntTarget: "HKEY_CURRENT_USER\\S-1-5-21-…\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+    InitiatingProcessFileName: "powershell.exe",
+    InitiatingProcessAccountName: "jdoe",
+    DeviceName: "fin-lt-0442.corp.example",
+    RegistryValueName: "Updater",
+    InitiatingProcessUniqueId: "1297036692682703",
+    InitiatingProcessCommandLine: "powershell -nop -w hidden -enc JAB...",
+    InitiatingProcessParentFileName: "outlook.exe"
+  }, {
+    Timestamp: "2026-10-22 14:03:09",
+    SourceTable: "DeviceNetworkEvents",
+    ActionType: "ConnectionSuccess",
+    HuntTarget: "185.220.101.4",
+    InitiatingProcessFileName: "powershell.exe",
+    InitiatingProcessAccountName: "jdoe",
+    DeviceName: "fin-lt-0442.corp.example",
+    RemotePort: "443",
+    InitiatingProcessUniqueId: "1297036692682703",
+    InitiatingProcessCommandLine: "powershell -nop -w hidden -enc JAB...",
+    InitiatingProcessParentFileName: "outlook.exe"
+  }, {
+    Timestamp: "2026-10-22 14:03:15",
+    SourceTable: "DeviceProcessEvents",
+    ActionType: "ProcessCreated",
+    HuntTarget: "cmd.exe /c whoami /all",
+    InitiatingProcessFileName: "powershell.exe",
+    InitiatingProcessAccountName: "jdoe",
+    DeviceName: "fin-lt-0442.corp.example",
+    SHA1: "99ae…0c3b",
+    InitiatingProcessUniqueId: "1297036692682703",
+    InitiatingProcessCommandLine: "powershell -nop -w hidden -enc JAB...",
+    InitiatingProcessParentFileName: "outlook.exe"
+  } ]
+}, {
+  id: "start",
+  title: "Where did this process start?",
+  sub: "Creation event, parent and account for a unique ID",
+  inputs: [ {
+    id: "uid",
+    label: "Unique ID",
+    value: "1297036692682703",
+    help: "InitiatingProcessUniqueId from a result row. Click one in the results to fill it in."
+  }, {
+    id: "host",
+    label: "Host (optional)",
+    value: "",
+    help: "IDs are unique per device. Add the host if more than one device matches."
+  } ],
+  build: v => [ `// Creation event of process ${v.uid}: its binary, command line, account and parent`, ...time.range === "24h" ? [ `// The process may have started before this window. Use 7 days or more.` ] : [], `DeviceProcessEvents`, kqlTimeframe(), `| where ProcessUniqueId == ${kq(v.uid)}${v.host ? ` and DeviceName startswith ${kq(v.host)}` : ""}`, `| project Timestamp, DeviceName, FileName, ProcessCommandLine, AccountDomain, AccountName, InitiatingProcessFileName, InitiatingProcessCommandLine, InitiatingProcessParentFileName, ProcessUniqueId`, `| sort by Timestamp asc` ].join("\n"),
+  rows: [ {
+    Timestamp: "2026-10-22 14:02:55",
+    DeviceName: "fin-lt-0442.corp.example",
+    FileName: "powershell.exe",
+    ProcessCommandLine: "powershell -nop -w hidden -enc JAB...",
+    AccountDomain: "corp",
+    AccountName: "jdoe",
+    InitiatingProcessFileName: "outlook.exe",
+    InitiatingProcessCommandLine: '"OUTLOOK.EXE"',
+    InitiatingProcessParentFileName: "explorer.exe",
+    ProcessUniqueId: "1297036692682703"
+  } ]
+} ];
+
+const DIALECTS = {
+  xql: {
+    id: "xql",
+    lang: "XQL",
+    sub: "Cortex threat hunting",
+    menu: "Cortex XDR · Query Builder",
+    chip: "xdr_data",
+    chipTitle: "Targets the unified xdr_data model. Older tenants with named datasets need different queries.",
+    fields: XQL_FIELDS,
+    recipes: XQL_RECIPES,
+    roleLabel: XQL_ROLE_LABEL,
+    rolePrefix: XQL_ROLE_PREFIX,
+    notes: XQL_NOTES,
+    defaultNote: "Most hunts start with the <b>Initiator</b>: the process and account that made the connection or wrote the file.",
+    search: "Search fields or ideas: proxy, hash, injection",
+    intro: "Pick a hunt, fill in what you already know, arrange the columns you want back, then copy the query into Cortex Query Builder. The time range travels with the query.",
+    copied: "Query copied. Paste it into Cortex Query Builder.",
+    stages: new Set("dataset preset filter fields alter comp sort limit dedup join union config bin call arrayexpand window target iploc view getrole replacenull transaction top".split(" ")),
+    kws: new Set("and or not in contains incidr as by asc desc count count_distinct sum avg min max values to_string to_integer lowercase uppercase coalesce if case_sensitive timeframe between true false null".split(" ")),
+    token: /(\/\/[^\n]*)|("""[\s\S]*?"""|"[^"\n]*")|(ENUM\.[A-Z_]+)|(\b\d[\w.]*)|([A-Za-z_][A-Za-z0-9_]*)|([\s\S])/g,
+    proj: /\|\s*(fields|comp)\b([^|]*)/g,
+    projKind: {
+      fields: "fields",
+      comp: "comp"
+    },
+    alias: /\bas\s+(\w+)/g,
+    tail: /^\s*\|\s*(sort|limit)\b/,
+    newFields: "fields",
+    lookup: {
+      col: "action_process_instance_id",
+      input: "inst"
+    }
+  },
+  kql: {
+    id: "kql",
+    lang: "KQL",
+    sub: "Defender advanced hunting",
+    menu: "Microsoft Defender XDR · Advanced hunting",
+    chip: "Device* tables",
+    chipTitle: "Targets the Defender XDR advanced hunting Device* tables. In Microsoft Sentinel the time column is TimeGenerated, not Timestamp.",
+    fields: KQL_FIELDS,
+    recipes: KQL_RECIPES,
+    roleLabel: KQL_ROLE_LABEL,
+    rolePrefix: KQL_ROLE_PREFIX,
+    notes: {
+      causality: "<b>Parent</b> is the process that started the initiator, such as the Office app that launched a script. Defender keeps one level, not the whole chain. Prefix <code>InitiatingProcessParent</code>.",
+      actor: "<b>Initiator</b> is the process and account behind the event: it made the connection, wrote the file or started the new process. Prefix <code>InitiatingProcess</code>.",
+      action: "<b>Target</b> is what was touched. Some columns change meaning by table: <code>FileName</code> is the written file in DeviceFileEvents and the started binary in DeviceProcessEvents.",
+      dst: "<b>Remote side</b> is the other device in a remote logon, RDP session or SMB file write. For ordinary outbound traffic, use Target."
+    },
+    defaultNote: "Most hunts start with the <b>Initiator</b>: the process and account behind the event. Each column exists only in some tables; the list shows which.",
+    search: "Search columns or ideas: rdp, hash, elevation",
+    intro: "Pick a hunt, fill in what you already know, arrange the columns you want back, then copy the query into Defender advanced hunting. The time range travels with the query and overrides the portal's time picker.",
+    copied: "Query copied. Paste it into Defender advanced hunting.",
+    stages: new Set("where project project-away project-rename project-reorder extend summarize sort order top take limit union join lookup distinct mv-expand parse let invoke evaluate make-series render search find".split(" ")),
+    kws: new Set("and or not in has has_any has_all hasprefix contains contains_cs startswith endswith matches regex between ago now datetime timespan count dcount countif sum avg min max make_set make_list arg_max arg_min by asc desc case iff iif isempty isnotempty tostring toint tolong todatetime parse_json bin withsource kind on true false".split(" ")),
+    token: /(\/\/[^\n]*)|(@"[^"\n]*"|@'[^'\n]*'|"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*')|(\bDevice[A-Za-z]*Events\b|\bDeviceInfo\b)|(\b\d[\w.]*)|(mv-expand|project-away|project-rename|project-reorder|[A-Za-z_][A-Za-z0-9_]*)|([\s\S])/g,
+    proj: /\|\s*(project|summarize)(?![\w-])([^|]*)/g,
+    projKind: {
+      project: "fields",
+      summarize: "comp"
+    },
+    alias: /(\w+)\s*=\s*[A-Za-z_]\w*\(/g,
+    tail: /^\s*\|\s*(sort|order|take|limit|top)\b/,
+    newFields: "project",
+    lookup: {
+      col: "InitiatingProcessUniqueId",
+      input: "uid"
+    }
+  }
+};
+
+let D, FIELDS, RECIPES, FIELD_BY_NAME;
+
 const state = {
   role: null,
   kind: null,
   q: "",
-  recipe: RECIPES[0],
+  recipe: null,
   values: {}
 };
+
+const memo = {};
 
 const $ = s => document.querySelector(s);
 
@@ -1307,14 +2205,14 @@ const esc = s => String(s).replace(/[&<>"]/g, (c => ({
 }[c])));
 
 function matches(f, q) {
-  return f.name.includes(q) || f.desc.toLowerCase().includes(q) || f.tags.some((t => t.includes(q)));
+  return f.name.toLowerCase().includes(q) || f.desc.toLowerCase().includes(q) || f.tags.some((t => t.includes(q)));
 }
 
 function renderFields() {
   const q = state.q.trim().toLowerCase();
   const list = FIELDS.filter((f => (!state.role || f.role === state.role) && (!state.kind || f.kind === state.kind || state.kind !== "host" && f.role === "context") && (!q || matches(f, q))));
-  $("#fieldCount").textContent = `${list.length} of ${FIELDS.length} fields · names verified`;
-  $("#fieldCount").title = "Names checked against the XQL Schema Reference.";
+  $("#fieldCount").textContent = D.id === "kql" ? `${list.length} of ${FIELDS.length} columns · names from Microsoft's schema reference · not yet checked on a tenant` : `${list.length} of ${FIELDS.length} fields · names verified`;
+  $("#fieldCount").title = D.id === "kql" ? "Column names, tables and notes come from Microsoft's advanced hunting schema reference. Check population on your own tenant before relying on a hunt." : "Names checked against the XQL Schema Reference.";
   const el = $("#fieldList");
   if (!list.length) {
     el.innerHTML = `<div class="empty">No fields match. Clear a filter or try a shorter search.</div>`;
@@ -1323,29 +2221,21 @@ function renderFields() {
   el.innerHTML = ROLES.map((g => {
     const items = list.filter((f => f.role === g));
     if (!items.length) return "";
-    return `<div class="group-label"><span class="label">${ROLE_LABEL[g]}</span><code>${ROLE_PREFIX[g]}</code></div>` + items.map((f => {
+    return `<div class="group-label"><span class="label">${D.roleLabel[g]}</span><code>${D.rolePrefix[g]}</code></div>` + items.map((f => {
       const [c, soft] = KIND_VARS[f.kind];
       const meta = [ `<span class="k">${KIND_LABEL[f.kind]}</span>` ];
       if (!f.schema) meta.push(`<span class="warn">name unconfirmed</span>`);
       if (f.blank) meta.push(`<span class="warn">sometimes blank</span>`);
+      if (f.tables) meta.push(`<span title="${f.tables.map((t => KQL_TABLES[t])).join(", ")}">${f.tables.length === EVERY.length ? "every Device*Events table" : f.tables.map((t => KQL_TABLE_SHORT[t])).join(" · ")}</span>`);
       return `<div class="field" draggable="true" data-field="${f.name}" style="--c:${c};--soft:${soft}">\n        <button class="fname" type="button" data-insert="${f.name}" title="Type into the query at the cursor">${f.name}</button>\n        <button class="add" type="button" data-addcol="${f.name}" aria-label="Add ${f.name} as a result column" title="Add as a result column"><svg class="i"><use href="#i-plus"/></svg></button>\n        <p class="desc">${esc(f.desc)}</p>\n        <div class="meta">${meta.join("")}</div>\n      </div>`;
     })).join("");
   })).join("");
 }
 
-const NOTES = {
-  causality: "<b>Root cause</b> is where the process chain started, such as the Office app that launched a script. Prefix <code>causality_actor_</code>.",
-  actor: "<b>Initiator</b> is the process and account that made the connection or wrote the file. Prefix <code>actor_</code>, or <code>os_actor_</code> when code was injected.",
-  action: "<b>Target</b> is what was touched: the remote IP or hostname, the file, or the child process. Prefix <code>action_</code> and <code>dns_</code>.",
-  dst: "<b>Other endpoint</b> is the far host in a cross-host event, such as lateral movement or a remote logon. For ordinary outbound traffic, use Target. Prefix <code>dst_</code>."
-};
-
-const DEFAULT_NOTE = $("#chainNote").innerHTML;
-
 document.querySelectorAll(".link").forEach((b => b.addEventListener("click", (() => {
   state.role = state.role === b.dataset.role ? null : b.dataset.role;
   document.querySelectorAll(".link").forEach((x => x.setAttribute("aria-pressed", x.dataset.role === state.role)));
-  $("#chainNote").innerHTML = state.role ? NOTES[state.role] : DEFAULT_NOTE;
+  $("#chainNote").innerHTML = state.role ? D.notes[state.role] : D.defaultNote;
   renderFields();
 }))));
 
@@ -1374,11 +2264,14 @@ function renderQuestions() {
 }
 
 function renderForm() {
-  const r = state.recipe;
-  state.values = Object.fromEntries(r.inputs.map((i => [ i.id, i.value ])));
+  const r = state.recipe, kept = memo[r.id] || {};
+  state.values = memo[r.id] = Object.fromEntries(r.inputs.map((i => {
+    const v = kept[i.id];
+    return [ i.id, v !== undefined && (!i.options || i.options.some((([o]) => o === v))) ? v : i.value ];
+  })));
   $("#recipeForm").innerHTML = r.inputs.map((i => {
-    const id = `in-${r.id}-${i.id}`;
-    const control = i.options ? `<select id="${id}" data-k="${i.id}">${i.options.map((([v, l]) => `<option value="${v}"${v === i.value ? " selected" : ""}>${esc(l)}</option>`)).join("")}</select>` : `<input id="${id}" data-k="${i.id}" value="${esc(i.value)}">`;
+    const id = `in-${r.id}-${i.id}`, cur = state.values[i.id];
+    const control = i.options ? `<select id="${id}" data-k="${i.id}">${i.options.map((([v, l]) => `<option value="${v}"${v === cur ? " selected" : ""}>${esc(l)}</option>`)).join("")}</select>` : `<input id="${id}" data-k="${i.id}" value="${esc(cur)}">`;
     return `<label>${i.label}${control}${i.help ? `<span class="help">${i.help}</span>` : ""}</label>`;
   })).join("") + `<div class="timebox" id="timeBox"></div>`;
   renderTime();
@@ -1404,8 +2297,11 @@ function showWindowError() {
   }
 }
 
+let built = "";
+
 function applyRecipe() {
-  setQuery(state.recipe.build(state.values));
+  built = state.recipe.build(state.values);
+  setQuery(built);
 }
 
 $("#questions").addEventListener("click", (e => {
@@ -1423,8 +2319,8 @@ $("#preview").addEventListener("click", (e => {
   state.recipe = RECIPES.find((r => r.id === "start"));
   renderQuestions();
   renderForm();
-  state.values.inst = b.dataset.lookup;
-  $("#in-start-inst").value = b.dataset.lookup;
+  state.values[D.lookup.input] = b.dataset.lookup;
+  $(`#in-start-${D.lookup.input}`).value = b.dataset.lookup;
   applyRecipe();
   showToast("Start-event lookup ready");
 }));
@@ -1452,20 +2348,15 @@ $("#recipeForm").addEventListener("submit", (e => e.preventDefault()));
 
 $("#resetBtn").addEventListener("click", applyRecipe);
 
-const STAGES = new Set("dataset preset filter fields alter comp sort limit dedup join union config bin call arrayexpand window target iploc view getrole replacenull transaction top".split(" "));
-
-const KWS = new Set("and or not in contains incidr as by asc desc count count_distinct sum avg min max values to_string to_integer lowercase uppercase coalesce if case_sensitive timeframe between true false null".split(" "));
-
-const TOKEN = /(\/\/[^\n]*)|("""[\s\S]*?"""|"[^"\n]*")|(ENUM\.[A-Z_]+)|(\b\d[\w.]*)|([A-Za-z_][A-Za-z0-9_]*)|([\s\S])/g;
-
 function highlight(src) {
   let out = "", m;
-  TOKEN.lastIndex = 0;
-  while (m = TOKEN.exec(src)) {
+  const re = D.token;
+  re.lastIndex = 0;
+  while (m = re.exec(src)) {
     const [t, cm, str, en, num, word] = m;
     if (cm) out += `<span class="t-cm">${esc(cm)}</span>`; else if (str) out += `<span class="t-str">${esc(str)}</span>`; else if (en) out += `<span class="t-enum">${en}</span>`; else if (num) out += `<span class="t-num">${esc(num)}</span>`; else if (word) {
       const f = FIELD_BY_NAME[word];
-      if (STAGES.has(word)) out += `<span class="t-stage">${word}</span>`; else if (KWS.has(word)) out += `<span class="t-kw">${word}</span>`; else if (f) out += `<span class="t-f ${f.kind}" title="${ROLE_LABEL[f.role]} · ${KIND_LABEL[f.kind]}">${word}</span>`; else out += word;
+      if (D.stages.has(word)) out += `<span class="t-stage">${word}</span>`; else if (D.kws.has(word)) out += `<span class="t-kw">${word}</span>`; else if (f) out += `<span class="t-f ${f.kind}" title="${D.roleLabel[f.role]} · ${KIND_LABEL[f.kind]}">${word}</span>`; else out += word;
     } else out += esc(t);
   }
   return out + "\n";
@@ -1514,8 +2405,8 @@ function insertAtCursor(text, toast = true) {
 
 function lastProjection(text) {
   let last = null;
-  for (const m of text.matchAll(/\|\s*(fields|comp)\b([^|]*)/g)) last = {
-    stage: m[1],
+  for (const m of text.matchAll(D.proj)) last = {
+    stage: D.projKind[m[1]],
     body: m[2],
     index: m.index,
     end: m.index + m[0].length
@@ -1541,8 +2432,8 @@ function addColumn(name) {
     next = text.slice(0, p.end - p.body.length) + `${body}, ${name}` + tail + text.slice(p.end);
   } else {
     const lines = text.split("\n");
-    const at = lines.findIndex((l => /^\s*\|\s*(sort|limit)\b/.test(l)));
-    lines.splice(at < 0 ? lines.length : at, 0, `| fields ${name}`);
+    const at = lines.findIndex((l => D.tail.test(l)));
+    lines.splice(at < 0 ? lines.length : at, 0, `| ${D.newFields} ${name}`);
     next = lines.join("\n");
   }
   setQuery(next);
@@ -1555,7 +2446,7 @@ function currentColumns() {
   const body = p.body.replace(/\/\/[^\n]*/g, "");
   if (p.stage === "fields") return body.split(",").map((s => s.trim().split(/\s+/)[0])).filter(Boolean);
   const by = body.match(/\bby\s+([\s\S]+)/);
-  const aliases = [ ...body.matchAll(/\bas\s+(\w+)/g) ].map((m => m[1]));
+  const aliases = [ ...body.matchAll(D.alias) ].map((m => m[1]));
   return [ ...by ? by[1].split(",").map((s => s.trim())).filter(Boolean) : [], ...aliases ];
 }
 
@@ -1579,13 +2470,13 @@ function renderColumns() {
     const col = f && f.kind !== "host" ? KIND_VARS[f.kind][0] : "var(--line-2)";
     if (i === ghostAt) return `<th class="ghost" data-col="${esc(c)}"><span>${esc(c)}</span></th>`;
     const movable = !aliases.includes(c);
-    const tip = f ? `${ROLE_LABEL[f.role]} · ${KIND_LABEL[f.kind]}` : "Computed";
+    const tip = f ? `${D.roleLabel[f.role]} · ${KIND_LABEL[f.kind]}` : "Computed";
     return `<th data-col="${esc(c)}"${movable ? ` draggable="true"` : ""} style="--c:${col}" title="${tip}${movable ? ". Drag to move, or drag out of the results to remove." : ""}">${esc(c)}</th>`;
   }));
   const cell = (r, c, i) => {
     const at = ` data-col="${esc(c)}"`;
     if (i === ghostAt) return `<td class="ghost"${at}><span>${c in r ? esc(r[c]) : "new column"}</span></td>`;
-    if (c === "action_process_instance_id" && r[c] && state.recipe.id !== "start") return `<td${at}><button class="cell-link" type="button" data-lookup="${esc(r[c])}" title="Find where this process started">${esc(r[c])}</button></td>`;
+    if (c === D.lookup.col && r[c] && state.recipe.id !== "start") return `<td${at}><button class="cell-link" type="button" data-lookup="${esc(r[c])}" title="Find where this process started">${esc(r[c])}</button></td>`;
     return c in r ? `<td${at}>${esc(r[c])}</td>` : `<td class="na"${at}>no example</td>`;
   };
   $("#preview").innerHTML = `<thead><tr>${head.join("")}</tr></thead>` + `<tbody>${rows.map((r => `<tr>${cols.map(((c, i) => cell(r, c, i))).join("")}</tr>`)).join("")}</tbody>`;
@@ -1619,7 +2510,7 @@ function slideColumns(before) {
 
 let drag = null;
 
-const aliasesOf = p => p && p.stage === "comp" ? [ ...p.body.matchAll(/\bas\s+(\w+)/g) ].map((m => m[1])) : [];
+const aliasesOf = p => p && p.stage === "comp" ? [ ...p.body.matchAll(D.alias) ].map((m => m[1])) : [];
 
 function updateDropHint() {
   const el = document.getElementById("dropHint");
@@ -1797,7 +2688,7 @@ document.addEventListener("dragover", (e => {
 }));
 
 $("#copyBtn").addEventListener("click", (() => {
-  const done = () => showToast("Query copied. Paste it into Cortex Query Builder.");
+  const done = () => showToast(D.copied);
   if (navigator.clipboard?.writeText) navigator.clipboard.writeText(ta.value).then(done, fallback); else fallback();
   function fallback() {
     ta.focus();
@@ -1900,17 +2791,98 @@ function showToast(msg) {
   toastT = setTimeout((() => t.classList.remove("show")), 2200);
 }
 
+const buffers = {};
+
+function setDialect(id) {
+  if (D) buffers[D.id] = {
+    text: ta.value,
+    built: built
+  };
+  D = DIALECTS[id];
+  FIELDS = D.fields;
+  RECIPES = D.recipes;
+  FIELD_BY_NAME = Object.fromEntries(FIELDS.map((f => [ f.name, f ])));
+  state.recipe = RECIPES.find((r => r.id === state.recipe?.id)) || RECIPES[0];
+  document.title = `HuntBuddy ${D.lang}`;
+  $("#destTag").textContent = D.lang;
+  $("#destSub").textContent = D.sub;
+  $("#destChip .mono").textContent = D.chip;
+  $("#destChip").title = D.chipTitle;
+  $("#introText").textContent = D.intro;
+  $("#railText").textContent = `Ask in plain words. Answers come back as ${D.lang} you can load into the editor.`;
+  $("#fieldSearch").placeholder = D.search;
+  ta.setAttribute("aria-label", `${D.lang} query editor`);
+  document.querySelectorAll(".link").forEach((b => {
+    b.innerHTML = (b.classList.contains("alt") ? `<svg class="i"><use href="#i-swap"/></svg>` : "") + D.roleLabel[b.dataset.role];
+  }));
+  $("#chainNote").innerHTML = state.role ? D.notes[state.role] : D.defaultNote;
+  renderFields();
+  renderQuestions();
+  renderForm();
+  const kept = buffers[id];
+  built = state.recipe.build(state.values);
+  setQuery(kept && kept.built === built ? kept.text : built);
+}
+
+const destBtn = $("#destBtn"), destMenu = $("#destMenu");
+
+function openDestMenu(open) {
+  destMenu.hidden = !open;
+  destBtn.setAttribute("aria-expanded", open);
+  if (!open) return;
+  destMenu.innerHTML = Object.values(DIALECTS).map((d => `<button class="dest-opt" type="button" role="menuitemradio" aria-checked="${d === D}" data-dest="${d.id}">\n    <svg class="i tick" aria-hidden="true"><use href="#i-check"/></svg><b>HuntBuddy <span>${d.lang}</span></b><small>${esc(d.menu)}</small></button>`)).join("");
+  destMenu.querySelector('[aria-checked="true"]').focus();
+}
+
+destBtn.addEventListener("click", (() => openDestMenu(destMenu.hidden)));
+
+destBtn.addEventListener("keydown", (e => {
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    openDestMenu(true);
+  }
+}));
+
+destMenu.addEventListener("click", (e => {
+  const b = e.target.closest("[data-dest]");
+  if (!b) return;
+  openDestMenu(false);
+  destBtn.focus();
+  if (b.dataset.dest === D.id) return;
+  setDialect(b.dataset.dest);
+  try {
+    localStorage.setItem("huntdesk-dialect", D.id);
+  } catch {}
+  showToast(`Building ${D.lang} for ${D.menu.split(" · ")[0]}`);
+}));
+
+destMenu.addEventListener("keydown", (e => {
+  const opts = [ ...destMenu.querySelectorAll(".dest-opt") ], i = opts.indexOf(document.activeElement);
+  if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+    e.preventDefault();
+    opts[(i + (e.key === "ArrowDown" ? 1 : opts.length - 1)) % opts.length].focus();
+  } else if (e.key === "Escape") {
+    openDestMenu(false);
+    destBtn.focus();
+  } else if (e.key === "Tab") openDestMenu(false);
+}));
+
+document.addEventListener("click", (e => {
+  if (!destMenu.hidden && !e.target.closest(".brand")) openDestMenu(false);
+}));
+
+let startDialect = "xql";
+
+try {
+  const s = localStorage.getItem("huntdesk-dialect");
+  if (DIALECTS[s]) startDialect = s;
+} catch {}
+
 applyTheme();
 
 applyAssistant();
 
-renderFields();
-
-renderQuestions();
-
-renderForm();
-
-applyRecipe();
+setDialect(startDialect);
 </script>
 </body>
 </html>
